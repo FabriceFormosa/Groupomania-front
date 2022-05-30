@@ -1,29 +1,101 @@
 <script>
+
+console.log(import.meta.env)
+
+
 function data() // function data renvoie un objet
 {
-  return{email:"formosafabrice@wanadoo.fr", password:"abc123"} 
+  return{
+    email:"toto@wanadoo.fr",
+     password:"toto",
+     isFieldInvalid:false,
+     error:""
+     } 
 }
 
 // objet methods
 
-function checkCredentials(email,password){
-  console.log(email,password)
-  const token= "my JWT token"
-  if(email!= "formosafabrice@wanadoo.fr") throw new Error("Invalid email")
-  if(password != "abc123") throw new Error("Invalid password")
-  // si ok sauvegarde du token
-  console.log(email,password)
-  localStorage.setItem("token",token)
-  this.$router.push("/home")
+function submitForm(email,password){
+  //console.log(email,password)
+  //console.log(import.meta.env)
+//const {VITE_SERVER_ADDRESS,VITE_SERVER_PORT}= import.meta.env 
+//console.log("VITE_SERVER_ADDRESS :",import.meta.env.VITE_SERVER_ADDRESS)
+//console.log("VITE_SERVER_PORT :",import.meta.env.VITE_SERVER_PORT)
+//const url='http://${VITE_SERVER_ADDRESS}:${VITE_SERVER_PORT}/auth/login'
+const  url="http://localhost:3000/auth/login"
+//console.log("url ",url)
+const  options = {
+  method:'POST',
+  headers:{'Content-Type':'application/json'},
+  body:JSON.stringify({email,password})
+}
+
+
+this.error ="";
+fetch(url,options)
+ .then((res) => {
+   if(res.ok) 
+   {
+      console.log( "res",res)
+      return res.json()
+   }
+  
+   res.text().then((err) => {
+     console.log("error",err)
+     const {error} = JSON.parse(err)
+     console.log("message",error)
+      this.error = error
+     throw new Error(error) })
+     
+ })
+ .then((res) => { 
+   console.log("suite res: ",res)
+   const token= res.token
+   
+  console.log("token: ",res.token)
+   localStorage.setItem("token",token)
+   this.$router.push("/home")
+ })
+  .catch((err)=>{
+   console.log("err: ",err)
+   
+
+ })
+   
+ }
+ 
+
+ function invalidField(bool){
+    console.log("invalidField call")
+   this.isFieldInvalid = bool
  }
 
 export default {
     name:"Login",
     data , //function data 
     methods:{
-    checkCredentials // function checkCredentials
+    submitForm, // function submitForm
+    invalidField
+    },
+    
+      //  watch:{
+      // email(value){
+      // console.log("email:",value)
+      // this.invalidField((value===""))
+      // },
+      // password (value){
+      // console.log("password:",value)
+      //  this.invalidField((value===""))
+      // }
+      // }
+
+
     }
-}
+
+
+
+
+
 </script>
 
 
@@ -31,8 +103,10 @@ export default {
 <template>
 
 <main class="form-signin">
-  <form>
-    <img class="mb-4 d-block mx-auto" src="../../public/favicon.ico" alt="" width="72" height="57">
+  <!-- <form :class="this.isFieldInvalid ? 'hasErrors':''"> -->
+    <form>
+>
+    <img class="mb-4 d-block mx-auto" src="./../../../public/favicon.ico" alt="" width="72" height="57">
     <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
 
     <div class="form-floating">
@@ -43,7 +117,7 @@ export default {
        placeholder="name@example.com" 
        v-model="email"
        required
-       @invalid="invalidateform"
+       invalid
        >
       <label for="floatingInput">Email address</label>
     </div>
@@ -54,17 +128,19 @@ export default {
       id="floatingPassword" 
       placeholder="Password" 
       v-model="password"
-      required  
+      required
+      invalid
       >
       <label for="floatingPassword">Password</label>
     </div>
+    <span v-if ="error" class="error-msg">{{error}}</span>
 
     <!-- <div class="checkbox mb-3">
       <label>
         <input type="checkbox" value="remember-me"> Remember me
       </label>
     </div> -->
-    <button class="w-100 btn btn-lg btn-primary" type="submit"  @click.prevent="() => checkCredentials(this.email,this.password)">Sign in</button>
+    <button class="w-100 btn btn-lg btn-primary" type="submit"  @click.prevent="() => submitForm(this.email,this.password)">Sign in</button>
     <p class="mt-5 mb-3 text-muted">&copy; 2017–2021</p>
     <p class="mt-5 mb-3 text-muted">Value:{{email}}</p>
     <p class="mt-5 mb-3 text-muted">pwd:{{password}}</p>
@@ -73,10 +149,15 @@ export default {
 
 </template>
 
-<style>
+<style scoped>
+
+
+
+.form-floating input:invalid{
+  border: 1px solid red;
+}
+
 html,
-
-
 body {
   
   align-items: center;
@@ -124,5 +205,10 @@ body {
           font-size: 3.5rem;
         }
       }
+
+    .error-msg
+    {
+      color: red;
+    }
 
 </style>

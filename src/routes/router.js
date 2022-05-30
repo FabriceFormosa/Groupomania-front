@@ -12,7 +12,7 @@ const routes=[
     {path:"/home",component:Wall},
     {path:"/profile",component:Profile},
     {path:"/editprofile",component:EditProfile},
-    {path:"/",redirect:"home"}
+    {path:"/",redirect:"login"}
 ]
 
 const router = createRouter({history:createWebHistory(),routes})
@@ -21,7 +21,8 @@ const router = createRouter({history:createWebHistory(),routes})
 router.beforeEach( (to,from) => {
     
     // pour acceder à une page privée il faut verifier l existence d'un token
-    if( isPrivatePage(to) && ( !isTokenPresent() || !isTokenValid() ))
+    // if( isPrivatePage(to) && ( !isTokenPresent() || !isTokenValid() ))
+    if( isPrivatePage(to) && !isTokenPresent())
     {
         console.log("re routage ver page login token inexistant ou invalide ")
         return router.push("/login")
@@ -38,7 +39,10 @@ function isPrivatePage(to)
 
 function isTokenPresent()
 {
-    return ( localStorage.getItem("token") != null)
+    const token = localStorage.getItem("token")
+    console.log (" token present ",token)
+
+    return ( token != null)
 }
 
 function isTokenValid()
