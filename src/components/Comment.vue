@@ -2,7 +2,15 @@
 import Avatar from "./Avatar.vue"
 export default {
     name:"Comment",
-    components:{Avatar}
+    components:{Avatar},
+    props:{
+         email:{
+        type:String,
+        required:true},
+          content:{
+        type:String,
+        required:true}
+    }
 }
 
 </script>
@@ -11,8 +19,8 @@ export default {
       <Avatar></Avatar>
  <div class="d-flex flex-column comment_text p-1">
     
-    <p>sylvie du marketing</p>
-    <p>ouah c'est super génial cette histoire </p>
+    <p>{{email}}</p>
+    <p>{{content}}</p>
  </div>
  </div>
    

@@ -28,7 +28,7 @@ router.beforeEach( (to,from) => {
         return router.push("/login")
     }
 
-    console.log("routage normal")
+    //console.log("routage normal")
 })
 
 function isPrivatePage(to)
@@ -40,7 +40,7 @@ function isPrivatePage(to)
 function isTokenPresent()
 {
     const token = localStorage.getItem("token")
-    console.log (" token present ",token)
+    //console.log (" token present ",token)
 
     return ( token != null)
 }

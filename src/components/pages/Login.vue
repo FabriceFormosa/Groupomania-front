@@ -1,6 +1,6 @@
 <script>
 
-console.log(import.meta.env)
+//console.log(import.meta.env)
 
 
 function data() // function data renvoie un objet
@@ -18,12 +18,12 @@ function data() // function data renvoie un objet
 function submitForm(email,password){
   //console.log(email,password)
   //console.log(import.meta.env)
-//const {VITE_SERVER_ADDRESS,VITE_SERVER_PORT}= import.meta.env 
+const {VITE_SERVER_ADDRESS,VITE_SERVER_PORT}= import.meta.env 
 //console.log("VITE_SERVER_ADDRESS :",import.meta.env.VITE_SERVER_ADDRESS)
 //console.log("VITE_SERVER_PORT :",import.meta.env.VITE_SERVER_PORT)
-//const url='http://${VITE_SERVER_ADDRESS}:${VITE_SERVER_PORT}/auth/login'
-const  url="http://localhost:3000/auth/login"
-//console.log("url ",url)
+const url=`http://${VITE_SERVER_ADDRESS}:${VITE_SERVER_PORT}/auth/login`
+//const  url="http://localhost:3000/auth/login"
+console.log("url ",url)
 const  options = {
   method:'POST',
   headers:{'Content-Type':'application/json'},
@@ -52,7 +52,7 @@ fetch(url,options)
    console.log("suite res: ",res)
    const token= res.token
    
-  console.log("token: ",res.token)
+  //console.log("token: ",res.token)
    localStorage.setItem("token",token)
    this.$router.push("/home")
  })
