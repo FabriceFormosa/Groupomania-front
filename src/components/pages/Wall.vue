@@ -36,7 +36,7 @@ export default{
               
               this.posts = posts
               this.email = email
-              //console.log(  "this.posts",this.posts )
+              console.log(  "this.posts",this.posts )
               })
              
             .catch(error => {
@@ -56,8 +56,7 @@ export default{
 
 <div v-for="post in posts" >
 <Card 
-    :email="post.user" 
-    :title="post.title"
+    :email="post.user.email"
     :content="post.content" 
     :url="post.imageUrl" 
     :comments="post.comments"

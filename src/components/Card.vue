@@ -4,7 +4,7 @@ import Avatar from "./Avatar.vue"
 export default{
     name:"Card",
     components:{Comment,Avatar},
-    props:["email","title","content","url","comments","id"],
+    props:["email","content","url","comments","id"],
     data() {
       return {
         currentComment:null,
@@ -52,6 +52,49 @@ export default{
         })
        .catch((err) => {  console.log  })
       }
+      ,
+     
+       deletePost(){
+
+        const {VITE_SERVER_ADDRESS,VITE_SERVER_PORT}= import.meta.env 
+        const url=`http://${VITE_SERVER_ADDRESS}:${VITE_SERVER_PORT}/posts`
+
+        
+        console.log("url :",url+"/"+this.$props.id)
+
+        const  options = {
+          method:'DELETE',
+          headers:{
+                authorization:`Bearer ${localStorage.getItem("token")}`,
+                "Accept":"application/json",
+                "Content-Type":"application/json"
+                },
+          body:JSON.stringify({
+               //comment:this.currentComment
+            })
+        }
+
+        fetch(url+"/"+this.$props.id,options)
+        .then((res) => {
+            if( res.status === 200 )
+            {
+              return res.json()
+            }else
+            {
+
+            throw new Error("Failed to delete Post")
+            }
+
+        })
+        .then((res) => {
+          console.log(res)
+          this.$router.go() //reload page
+      
+        })
+       .catch((err) => {  console.log  })
+      }
+     
+
 
     }
      
@@ -67,6 +110,8 @@ export default{
     
     alt="Avatar"
   />
+  <span>{{email}}</span>
+  <span><button type="button" class="btn btn-primary s-auto rounded-pill" @click="deletePost">Delete</button></span> 
  
   <!-- <div >{{email}}</div>
   <div >{{url}}</div> -->
@@ -83,7 +128,7 @@ export default{
      <!-- <p class="card-text"><small class="text-muted">Last updated3mins ago</small></p> -->
 
      <div v-for="comment in comments" >
-     <Comment :email="comment.user" :content="comment.content"></Comment>
+     <Comment :email="comment.user.email" :content="comment.content"></Comment>
      </div>
      <!-- <Comment></Comment>
      <Comment></Comment>
@@ -107,6 +152,15 @@ export default{
       width:70%;
     }
 }
+.card-header
+{
+ 
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+
 .card-header img{
    width:50px;
 }
