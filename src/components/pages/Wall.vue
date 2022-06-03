@@ -35,8 +35,8 @@ export default{
               const {posts,email} = res
               
               this.posts = posts
-              this.email = email
-              console.log(  "this.posts",this.posts )
+              this.currentUser = email
+
               })
              
             .catch(error => {
@@ -45,26 +45,33 @@ export default{
     },
     data(){
         return { posts:[],
-        email:null}
+        currentUser:null
+       
+        }
     }
 }
 </script>
 <template>
 
-<div v-if="email" class="container-sm mt-5">
-<Postform></Postform>
+<div v-if="currentUser" class="container-sm mt-5">
+    <Postform></Postform>
 
-<div v-for="post in posts" >
-<Card 
-    :email="post.user.email"
-    :content="post.content" 
-    :url="post.imageUrl" 
-    :comments="post.comments"
-    :id="post.id">
-</Card>
+    <div v-for="post in posts" >
+    <Card 
+        :currentUser="currentUser"
+        :email="post.user.email"
+        :content="post.content" 
+        :url="post.imageUrl" 
+        :comments="post.comments"
+        :id="post.id"
+        
+        >
+    </Card></div>
+
 </div>
 
-</div>
+
+
 
 </template>
 <style module>

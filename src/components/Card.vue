@@ -4,11 +4,11 @@ import Avatar from "./Avatar.vue"
 export default{
     name:"Card",
     components:{Comment,Avatar},
-    props:["email","content","url","comments","id"],
+    props:["currentUser","email","content","url","comments","id"],
     data() {
       return {
         currentComment:null,
-        commentList:null
+       
       }
     },
     
@@ -47,7 +47,7 @@ export default{
         })
         .then((res) => {
           console.log(res)
-          //this.$router.go() //reload page
+          this.$router.go() //reload page
       
         })
        .catch((err) => {  console.log  })
@@ -111,7 +111,7 @@ export default{
     alt="Avatar"
   />
   <span>{{email}}</span>
-  <span><button type="button" class="btn btn-primary s-auto rounded-pill" @click="deletePost">Delete</button></span> 
+  <span><button type="button" v-if="currentUser === email"   class="btn btn-primary s-auto rounded-pill" @click="deletePost">Delete</button></span> 
  
   <!-- <div >{{email}}</div>
   <div >{{url}}</div> -->
