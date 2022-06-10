@@ -2,13 +2,13 @@
 
 <script>
 
-import Login from "./components/pages/Login.vue";
+//import Login from "./components/pages/Login.vue";
 import NavBar from "./components/Navbar.vue";
 
 export default {
   name:"App",
   components:{
-    Login,
+  //  Login,
     NavBar
   }
 }
@@ -26,7 +26,7 @@ export default {
 
 <style>
 body{
-  background-color: darkgrey;
+  background-color:darkgrey;
 }
 </style>
 

@@ -1,11 +1,5 @@
 <script>
-
-
-
- 
-
-
-                export default{
+  export default{
    data() {
      return {
        content: "",
@@ -17,8 +11,6 @@
 
       handleNewFile(e)
       {
-        
-        
         const file = e.target.files[0]
         console.log("file :",file)
         this.selectedImage = file
@@ -37,7 +29,7 @@ const  options = {
   method:'POST',
    headers:{
                 authorization:`Bearer ${localStorage.getItem("token")}`,
-                "Accept":"application/json",
+                "Accept":"application/json"
                 //"Content-Type": "multipart/form-data "
             },
             method: 'POST',

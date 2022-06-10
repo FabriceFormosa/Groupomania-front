@@ -1,195 +1,116 @@
+
 <script>
+
+import Avatar from "../Avatar.vue";
+
 export default{
-    name:"Profile"
+    name:"Profile",
+    components:{Avatar},
+    data(){
+        return { 
+        current_user:null,
+        email:null,
+        name:null,
+        lastName:null,
+        admin:null,
+        service:null,
+        urlAvatar:null
+
+
+        }
+    },
+	created() {
+
+           // console.log("--------idAvatar----------",this.$route.query.idAvatar);
+            const email = this.$route.query.idAvatar
+
+            this.current_user = JSON.parse( localStorage.getItem('current_user') );
+
+            if( this.$route.query.idAvatar == undefined ) // appel de la  page via le menu
+            {
+	           
+
+                if( this.current_user!= null)
+                {
+                //this.id	 = current_user.id
+                this.email = this.current_user.email
+                this.name=this.current_user.name
+                this.lastName=this.current_user.lastName
+                this.admin=(this.current_user.admin=='true')?"compte modérateur":"compte utilisateur"
+                this.service=this.current_user.service
+                this.urlAvatar=this.current_user.avatar
+                }
+
+
+            }
+            else{
+
+                  const options={
+                     headers:{
+                         
+                        authorization:`Bearer ${localStorage.getItem("token")}`
+                        }
+                    }
+                    const {VITE_SERVER_ADDRESS,VITE_SERVER_PORT}= import.meta.env 
+                    const url=`http://${VITE_SERVER_ADDRESS}:${VITE_SERVER_PORT}/users/getUser/${email}`
+
+                 //   console.log("url get one user by email: " + url)  
+                    
+
+        fetch(url,options)
+           .then((res) => {
+            if(res.ok) 
+            {
+                return res.json()
+            }else
+            {
+                throw new Error("Failed to fetch get" )
+
+            }})
+            .then(res => {
+              const {user} = res
+           //   console.log(" user",user)
+                this.email = user.email
+                this.name=user.name
+                this.lastName=user.lastName
+                this.admin=(user.admin=='true')?"compte modérateur":"compte utilisateur"
+                this.service=user.service
+                this.urlAvatar=user.avatar
+
+               // this.$router.go() //reload page
+
+              })
+             
+            .catch(error => {
+                console.log(  "error", error )
+            });
+        }
+    }
 }
 </script>
 <template><div class="container">
     <div class="main-body">
-    
-          <!-- Breadcrumb -->
-          <nav aria-label="breadcrumb" class="main-breadcrumb">
-            <ol class="breadcrumb">
-              <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-              <li class="breadcrumb-item"><a href="javascript:void(0)">User</a></li>
-              <li class="breadcrumb-item active" aria-current="page">User Profile</li>
-            </ol>
-          </nav>
-          <!-- /Breadcrumb -->
-    
-          <div class="row gutters-sm">
-            <!-- <div class="col-md-4 mb-3"> -->
-              <div class="card col-md-12 mb-3">
+   
+          <div class="row gutters-sm center-sm ">
+             <div class="card col-md-8 mb-3 mx-auto ">
                 <div class="card-body">
                   <div class="d-flex flex-column align-items-center text-center">
-                    <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Admin" class="rounded-circle" width="150">
+                  <Avatar v-if="this.urlAvatar" :url="this.urlAvatar"></Avatar>
+                    <!-- <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Admin" class="rounded-circle" width="150"> -->
                     <div class="mt-3">
-                      <h4>John Doe</h4>
-                      <p class="text-secondary mb-1">Full Stack Developer</p>
-                      <p class="text-muted font-size-sm">Bay Area, San Francisco, CA</p>
-                      <a href="/editprofile"><button class="btn btn-primary">Edit</button></a>
-                      <button class="btn btn-outline-primary">Message</button>
+                      <h4>{{lastName}} {{name}}</h4>
+                      <p class="text-secondary mb-1">{{service}}</p>
+                      <p class="text-secondary mb-1">{{email}}</p>
+                      <p class="text-secondary mb-1">{{admin}}</p>
                     </div>
                   </div>
                 </div>
               </div>
-              <div class="d-flex flex-column flex-md-row gap-3">
-              <div class="card col-md-4">
-                <ul class="list-group list-group-flush">
-                  <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                      <img src="../../assets/svg/World.svg" />
-                    <h6 class="mb-0 ms-1 me-auto">
-                        Website</h6>
-                    <span class="text-secondary">https://bootdey.com</span>
-                  </li>
-                  <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                      <img src="../../assets/svg/Github.svg" />
-                    <h6 class="mb-0  ms-1 me-auto">
-                        Github</h6>
-                    <span class="text-secondary">bootdey</span>
-                  </li>
-                  <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                      <img src="../../assets/svg/Twitter.svg" />
-                    <h6 class="mb-0  ms-1 me-auto" >
-                        Twitter</h6>
-                    <span class="text-secondary">@bootdey</span>
-                  </li>
-                  <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                      <img src="../../assets/svg/Instagram.svg" />
-                    <h6 class="mb-0  ms-1 me-auto">
-                        Instagram</h6>
-                    <span class="text-secondary">bootdey</span>
-                  </li>
-                  <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                      <img src="../../assets/svg/Facebook.svg" />
-                    <h6 class="mb-0  ms-1 me-auto">
-                        Facebook</h6>
-                    <span class="text-secondary">bootdey</span>
-                  </li>
-                </ul>
-              </div>
-            <!-- </div> -->
-                <div class="card col-md-8">
-                <div class="mb-3">
-                    <div class="card-body">
-                    <div class="row">
-                        <div class="col-sm-3">
-                        <h6 class="mb-0">Full Name</h6>
-                        </div>
-                        <div class="col-sm-9 text-secondary">
-                        Kenneth Valdez
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="row">
-                        <div class="col-sm-3">
-                        <h6 class="mb-0">Email</h6>
-                        </div>
-                        <div class="col-sm-9 text-secondary">
-                        fip@jukmuh.al
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="row">
-                        <div class="col-sm-3">
-                        <h6 class="mb-0">Phone</h6>
-                        </div>
-                        <div class="col-sm-9 text-secondary">
-                        (239) 816-9029
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="row">
-                        <div class="col-sm-3">
-                        <h6 class="mb-0">Mobile</h6>
-                        </div>
-                        <div class="col-sm-9 text-secondary">
-                        (320) 380-4539
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="row">
-                        <div class="col-sm-3">
-                        <h6 class="mb-0">Address</h6>
-                        </div>
-                        <div class="col-sm-9 text-secondary">
-                        Bay Area, San Francisco, CA
-                        </div>
-                    </div>
-                    <!-- <hr>
-                    <div class="row">
-                        <div class="col-sm-12">
-                        <a class="btn btn-info " target="__blank" href="https://www.bootdey.com/snippets/view/profile-edit-data-and-skills">Edit</a>
-                        </div>
-                    </div> -->
-                    </div>
-                </div>
-    <!-- 
-                <div class="row gutters-sm">
-                    <div class="col-sm-6 mb-3">
-                    <div class="card h-100">
-                        <div class="card-body">
-                        <h6 class="d-flex align-items-center mb-3"><i class="material-icons text-info mr-2">assignment</i>Project Status</h6>
-                        <small>Web Design</small>
-                        <div class="progress mb-3" style="height: 5px">
-                            <div class="progress-bar bg-primary" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
-                        <small>Website Markup</small>
-                        <div class="progress mb-3" style="height: 5px">
-                            <div class="progress-bar bg-primary" role="progressbar" style="width: 72%" aria-valuenow="72" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
-                        <small>One Page</small>
-                        <div class="progress mb-3" style="height: 5px">
-                            <div class="progress-bar bg-primary" role="progressbar" style="width: 89%" aria-valuenow="89" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
-                        <small>Mobile Template</small>
-                        <div class="progress mb-3" style="height: 5px">
-                            <div class="progress-bar bg-primary" role="progressbar" style="width: 55%" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
-                        <small>Backend API</small>
-                        <div class="progress mb-3" style="height: 5px">
-                            <div class="progress-bar bg-primary" role="progressbar" style="width: 66%" aria-valuenow="66" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
-                        </div>
-                    </div>
-                    </div>
-                    <div class="col-sm-6 mb-3">
-                    <div class="card h-100">
-                        <div class="card-body">
-                        <h6 class="d-flex align-items-center mb-3"><i class="material-icons text-info mr-2">assignment</i>Project Status</h6>
-                        <small>Web Design</small>
-                        <div class="progress mb-3" style="height: 5px">
-                            <div class="progress-bar bg-primary" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
-                        <small>Website Markup</small>
-                        <div class="progress mb-3" style="height: 5px">
-                            <div class="progress-bar bg-primary" role="progressbar" style="width: 72%" aria-valuenow="72" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
-                        <small>One Page</small>
-                        <div class="progress mb-3" style="height: 5px">
-                            <div class="progress-bar bg-primary" role="progressbar" style="width: 89%" aria-valuenow="89" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
-                        <small>Mobile Template</small>
-                        <div class="progress mb-3" style="height: 5px">
-                            <div class="progress-bar bg-primary" role="progressbar" style="width: 55%" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
-                        <small>Backend API</small>
-                        <div class="progress mb-3" style="height: 5px">
-                            <div class="progress-bar bg-primary" role="progressbar" style="width: 66%" aria-valuenow="66" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
-                        </div>
-                    </div>
-                    </div>
-                </div>
-
-    -->
-
-                </div>
+            </div>
             </div>
           </div>
-
-        </div>
-    </div>
     </template>
+
 <style scoped>
 .row > * {
     flex-shrink: 0;

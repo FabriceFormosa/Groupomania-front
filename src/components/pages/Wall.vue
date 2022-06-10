@@ -1,9 +1,26 @@
 <script>
-import Card from "../../components/Card.vue"
-import Postform from "../../components/Postform.vue"
+            function isJSON(data) {
+    var isJson = false
+    try {
+        //this works with JSON string and JSON object, not sure about others
+       var json = $.parseJSON(data);
+       isJson = typeof json === 'object' ;
+    } catch (ex) {
+        console.error('data is not JSON');
+    }
+    return isJson;
+}
+              
+
+import NavBar from "../Navbar.vue";
+import Card from "../Card.vue"
+import Postform from "../Postform.vue"
 export default{
     name:"Wall",
-    components: { Card,Postform },
+    components: { Card,Postform,NavBar },
+    computed:{
+        isJSON
+    },
     beforecreated() {
         const token = localStorage.getItem("token")
         if( token == null )
@@ -32,10 +49,51 @@ export default{
 
             }})
             .then(res => {
-              const {posts,email} = res
-              
-              this.posts = posts
+              const {posts,email,user} = res
+            // Array.isArray(posts)
+            //   console.log("res",res)
+            //   console.log("---------------------Array.isArray(posts):",Array.isArray(posts))
+
+            //   console.log("user",user)
+  
+              this.posts = posts 
               this.currentUser = email
+
+             // console.log("this.posts.user :",this.posts)
+
+
+        this.posts.forEach(post => {
+               // console.log("post user name",this.post.user.name)
+            });
+            // this.posts.forEach(post => {
+
+            // let card ={
+            //     id:post.id,
+            //     content:post.content,
+            //     imageUrl:post.imageUrl,
+            //     userId:post.userId,
+            //     createdAt:post.createdAt,
+            //     comments:post.comments,
+            //     user:post.user
+            //   }
+                
+            //      console.log("---------------------Array.isArray(post):",Array.isArray(post))
+            //    // console.log("post",post)
+            //     console.log("---------------------isJSON(post):",isJSON(post))
+            //     console.log("Object.getPrototypeOf(post)",Object.getPrototypeOf(post))
+            //   const keys = Object.keys(post)
+            //     console.log("post keys",keys)
+
+                
+                // this.cards.push(JSON.parse(post))
+            //   console.log("-----------------card :",card)
+
+            //   });
+
+            //   console.log("-----------------test :",test)
+            //   this.name = user.name
+            //   this.lastName = user.lastName
+            //   this.admin = user.admin
 
               })
              
@@ -46,24 +104,31 @@ export default{
     data(){
         return { posts:[],
         currentUser:null
-       
         }
     }
 }
 </script>
 <template>
+<!-- <NavBar>  </NavBar>  -->
+
 
 <div v-if="currentUser" class="container-sm mt-5">
     <Postform></Postform>
 
     <div v-for="post in posts" >
     <Card 
-        :currentUser="currentUser"
-        :email="post.user.email"
+        
+        
+        :name="post.user.name"
+        :lastName="post.user.lastName"
+        :avatar="post.user.avatar"
+        :owner_post_email="post.user.email"
         :content="post.content" 
         :url="post.imageUrl" 
         :comments="post.comments"
         :id="post.id"
+      
+        
         
         >
     </Card></div>
@@ -74,7 +139,7 @@ export default{
 
 
 </template>
-<style module>
+<style scoped>
 
 .card{
 width: 20rem;

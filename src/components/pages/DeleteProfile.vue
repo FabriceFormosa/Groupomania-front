@@ -1,6 +1,6 @@
 <script>
 export default {
-    name:"EditProfile"
+    name:"DeleteProfile"
 }
 </script>
 
@@ -10,7 +10,6 @@ export default {
 
 	<div class="col-lg-8 mx-auto mt-3">
 		<div class="card">
-             
 						<div class="card-body">
                             <!-- <i class="fa-solid fa-circle-camera"></i> -->
                             <div class="mb-3 d-flex flex-column">
@@ -28,99 +27,107 @@ export default {
 
 							<div class="row mb-3">
 								<div class="col-sm-3">
-									<h6 class="mb-0">Full Name</h6>
-								</div>
-								<div class="col-sm-9 text-secondary">
-									<input type="text" class="form-control" value="John Doe">
-								</div>
-							</div>
-							<div class="row mb-3">
-								<div class="col-sm-3">
 									<h6 class="mb-0">Email</h6>
 								</div>
 								<div class="col-sm-9 text-secondary">
-									<input type="text" class="form-control" value="john@example.com">
+									<input type="email" 
+									class="form-control" 
+									placeholder="lastname.name@groupomania.fr" 
+									v-model="email"
+									required
+       								invalid
+									>
 								</div>
 							</div>
+
 							<div class="row mb-3">
 								<div class="col-sm-3">
-									<h6 class="mb-0">Phone</h6>
+									<h6 class="mb-0">Password</h6>
 								</div>
 								<div class="col-sm-9 text-secondary">
-									<input type="text" class="form-control" value="(239) 816-9029">
+									<input type="password" 
+									class="form-control" 
+									placeholder="type a new password" 
+									v-model="password"
+									required
+       								invalid
+									>
 								</div>
 							</div>
+
 							<div class="row mb-3">
 								<div class="col-sm-3">
-									<h6 class="mb-0">Mobile</h6>
+									<h6 class="mb-0">Name</h6>
 								</div>
 								<div class="col-sm-9 text-secondary">
-									<input type="text" class="form-control" value="(320) 380-4539">
+									<input type="name" 
+									class="form-control" 
+									placeholder="type a new name" 
+									v-model="name"
+									required
+       								invalid
+									>
 								</div>
 							</div>
+
 							<div class="row mb-3">
 								<div class="col-sm-3">
-									<h6 class="mb-0">Address</h6>
+									<h6 class="mb-0">Last Name</h6>
 								</div>
 								<div class="col-sm-9 text-secondary">
-									<input type="text" class="form-control" value="Bay Area, San Francisco, CA">
+									<input type="lastName" 
+									class="form-control" 
+									placeholder="type a new last name" 
+									v-model="lastName"
+									required
+       								invalid
+									>
 								</div>
 							</div>
-                            <div class="row mb-3">
+
+							<div class="row mb-3">
 								<div class="col-sm-3">
-									<h6 class="mb-0">Position</h6>
+									<h6 class="mb-0">service</h6>
 								</div>
 								<div class="col-sm-9 text-secondary">
-									<input type="text" class="form-control" value="Fullstack developper">
+									<input type="service" 
+									class="form-control" 
+									placeholder="which service" 
+									v-model="service"
+									required
+       								invalid
+									>
+								</div>
+							</div>							
+							
+							<div class="row mb-3">
+								<div class="col-sm-3">
+									<h6 class="mb-0">admin</h6>
+								</div>
+								<div class="col-sm-9 text-secondary">
+									<input type="admin" 
+									class="form-control" 
+									placeholder="false" 
+									v-model="admin"
+									required
+       								invalid
+									>
 								</div>
 							</div>
-						    <div class="row mb-3">
-								<div class="col-sm-3">
-									<h6 class="mb-0">Website</h6>
-								</div>
-								<div class="col-sm-9 text-secondary">
-									<input type="text" class="form-control" value="www.formosafabrice.com">
-								</div>
-							</div>
-						    <div class="row mb-3">
-								<div class="col-sm-3">
-									<h6 class="mb-0">Github</h6>
-								</div>
-								<div class="col-sm-9 text-secondary">
-									<input type="text" class="form-control" value="MyUrl Github">
-								</div>
-							</div>     
-                            <div class="row mb-3">
-								<div class="col-sm-3">
-									<h6 class="mb-0">Twitter</h6>
-								</div>
-								<div class="col-sm-9 text-secondary">
-									<input type="text" class="form-control" value="MyUrl Twitter">
-								</div>
-							</div>     
-                            <div class="row mb-3">
-								<div class="col-sm-3">
-									<h6 class="mb-0">Instagram</h6>
-								</div>
-								<div class="col-sm-9 text-secondary">
-									<input type="text" class="form-control" value="MyUrl Instagram">
-								</div>
-							</div>       
-                            <div class="row mb-3">
-								<div class="col-sm-3">
-									<h6 class="mb-0">Facebook</h6>
-								</div>
-								<div class="col-sm-9 text-secondary">
-									<input type="text" class="form-control" value="MyUrl Facebook">
-								</div>
-							</div>                                                                                   
+
+
+							<div v-if ="error" class="error-msg">{{error}}</div>
+                                         
 							<div class="row">
 								
 								<div class="text-center text-secondary">
-									<input type="button" class="btn btn-primary px-4" value="Save Changes">
+									<input type="submit" class="btn btn-primary px-4" value="Update Profile"   @click.prevent="() => submitForm(this.id,this.email,this.password,this.name,this.lastName,this.service,this.admin)">
 								</div>
-							</div>
+							</div>							
+
 						</div>
+
+
 	
         </div>
     </div>

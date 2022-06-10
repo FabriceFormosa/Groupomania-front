@@ -2,7 +2,9 @@
 import Login from'../components/pages/Login.vue'
 import Wall from'../components/pages/Wall.vue'
 import Profile from'../components/pages/Profile.vue'
-import EditProfile from'../components/pages/EditProfile.vue'
+import CreateProfile from'../components/pages/CreateProfile.vue'
+import UpdateProfile from'../components/pages/UpdateProfile.vue'
+import DeleteProfile from'../components/pages/DeleteProfile.vue'
 
 import {createRouter,createWebHistory} from'vue-router'
 
@@ -11,7 +13,9 @@ const routes=[
  //   {path:"/signup",component:Login},
     {path:"/home",component:Wall},
     {path:"/profile",component:Profile},
-    {path:"/editprofile",component:EditProfile},
+    {path:"/createprofile",component:CreateProfile},
+    {path:"/updateprofile",component:UpdateProfile},
+    {path:"/deleteprofile",component:DeleteProfile},
     {path:"/",redirect:"login"}
 ]
 

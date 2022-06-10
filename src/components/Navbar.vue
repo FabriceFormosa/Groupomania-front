@@ -3,15 +3,37 @@
 
 import Logo from "./Logo.vue"
 export default {
-    name: "navbar",
+    name: "Navbar",
     components: { Logo },
+    //props:["name","lastName","admin"],
     data(){
-      return {isLoggedIn:false}
+      return {isLoggedIn:false,
+              current_user_name:null,
+              current_user_last_name:null,
+              current_user_admin:null
+              }
   },
-   created() {
+   mounted() {
         const token = localStorage.getItem("token")
+
+        var current_user = JSON.parse( localStorage.getItem('current_user') );
+        //console.log("current_user.name", current_user.name);
+        //const current_user = JSON.parse( localStorage.getItem('current_user') );
+        //const current_user = localStorage.getItem("current_user")
+        //console.log("current_user name: ",current_user.name)
         //console.log("fct created lecture token", token ," isLoggedIn : ",this.isLoggedIn)
+       
+        if( current_user!= null)
+        {
+              
+              this.current_user_name=current_user.name
+              this.current_user_last_name=current_user.lastName
+              this.current_user_admin=current_user.admin
+        }
+       // console.log("this.current_user_name: ",this.current_user_name)
         
+        
+
         if( token != null )
         {
             this.isLoggedIn=true;
@@ -20,10 +42,11 @@ export default {
     methods: {
       logOut() {
         localStorage.removeItem("token");
+        localStorage.removeItem("current_user");
         this.$router.push("/login");
       }
 
-    },
+    }
 }
 
 </script>
@@ -39,24 +62,33 @@ export default {
           <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"/></svg>
         </a> -->
         
-        <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+        <ul v-if="this.isLoggedIn" class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
           <li><router-link to ="/home" class="nav-link px-2 text-secondary">Home</router-link></li>
           <li><router-link to ="/profile" class="nav-link px-2 text-secondary">Profile</router-link></li>
+          <li v-if=" current_user_admin =='true' "><router-link to ="/createprofile" class="nav-link px-2 text-secondary">Create Profile</router-link></li>
+          <li v-if=" current_user_admin =='true' "><router-link to ="/updateprofile" class="nav-link px-2 text-secondary">Update Profile</router-link></li>
+          <li v-if=" current_user_admin =='true' "><router-link to ="/deleteprofile" class="nav-link px-2 text-secondary">Delete Profile</router-link></li>  
+         <!--  -->
         </ul>
+       
 
-        <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
+        <!-- <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
           <input type="search" class="form-control form-control-dark" placeholder="Search..." aria-label="Search">
-        </form>
-
-        <div class="text-end">
+        </form> -->
+        <div><span>{{current_user_last_name}} {{current_user_name}} <i  v-if="current_user_admin == 'false'" class="fa-solid fa-user"></i> <i v-if=" current_user_admin == 'true'" class="fa-solid fa-user-gear"></i>
+         <i @click="logOut" v-if="this.isLoggedIn" class="fa-solid fa-arrow-right-from-bracket"></i></span></div>
+       
+        <!-- <div class="text-end">
+         
           <button type="button" @click="logOut" v-if="this.isLoggedIn" class="btn btn-outline-light me-2">Logout</button>
           <button type="button"   v-if="!this.isLoggedIn" class="btn btn-primary">Login</button>
-        </div>
+        </div> -->
       </div>
     </div>
   </header>
 </template>
-<style>
+
+<style scoped>
 .b-example-divider {
   height: 3rem;
   background-color: rgba(0, 0, 0, .1);
@@ -88,5 +120,9 @@ export default {
 
 .dropdown-toggle {
   outline: 0;
+}
+i.fa-solid
+{
+  cursor: pointer;
 }
 </style>

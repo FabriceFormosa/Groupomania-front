@@ -9,17 +9,44 @@ export default {
         required:true},
           content:{
         type:String,
-        required:true}
-    }
+        required:true
+        },
+        urlAvatar:{
+          type:String
+        }
+    },
+     data() {
+      return {
+        currentComment:null,
+        postName:null,
+        postLastName:null,
+        fullName:null
+       
+      }
+    },
+    mounted(){
+     
+        const postEmail = this.$props.email
+        this.postName = postEmail.split('@')[0].split('.')[1]
+        if( this.postName ==null) this.postName = "unknown"
+     //   console.log("this.postName",this.postName)
+        this.postLastName = postEmail.split('@')[0].split('.')[0]
+        if( this.postLastName ==null) this.postLastName = "unknown"
+       // console.log("this.postName",this.postLastName)
+        this.fullName=this.postLastName +  "  "+this.postName
+
+    },
 }
 
 </script>
 <template>
  <div class="d-flex gap-1" >
-      <Avatar></Avatar>
+      <Avatar
+        :url="this.$props.urlAvatar"
+      ></Avatar>
  <div class="d-flex flex-column comment_text p-1">
     
-    <p>{{email}}</p>
+    <p>{{fullName}}</p>
     <p>{{content}}</p>
  </div>
  </div>

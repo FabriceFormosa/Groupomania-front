@@ -1,13 +1,12 @@
 <script>
-
 //console.log(import.meta.env)
-
+import NavBar from "../Navbar.vue";
 
 function data() // function data renvoie un objet
 {
   return{
-    email:"toto@wanadoo.fr",
-     password:"toto",
+    email:"prenom.nom@groupomania.fr",
+     password:"password",
      isFieldInvalid:false,
      error:""
      } 
@@ -16,13 +15,13 @@ function data() // function data renvoie un objet
 // objet methods
 
 function submitForm(email,password){
-  //console.log(email,password)
+  console.log(email,password)
   //console.log(import.meta.env)
 const {VITE_SERVER_ADDRESS,VITE_SERVER_PORT}= import.meta.env 
 //console.log("VITE_SERVER_ADDRESS :",import.meta.env.VITE_SERVER_ADDRESS)
 //console.log("VITE_SERVER_PORT :",import.meta.env.VITE_SERVER_PORT)
-const url=`http://${VITE_SERVER_ADDRESS}:${VITE_SERVER_PORT}/auth/login`
-//const  url="http://localhost:3000/auth/login"
+const url=`http://${VITE_SERVER_ADDRESS}:${VITE_SERVER_PORT}/users/login`
+
 console.log("url ",url)
 const  options = {
   method:'POST',
@@ -51,9 +50,13 @@ fetch(url,options)
  .then((res) => { 
    console.log("suite res: ",res)
    const token= res.token
+   const current_user = res.user
+   const users = res.users
    
   //console.log("token: ",res.token)
    localStorage.setItem("token",token)
+   localStorage.setItem("current_user",JSON.stringify(res.user))
+
    this.$router.push("/home")
  })
   .catch((err)=>{
@@ -77,6 +80,9 @@ export default {
     submitForm, // function submitForm
     invalidField
     },
+    components:{
+      NavBar
+    }
     
       //  watch:{
       // email(value){
@@ -102,10 +108,11 @@ export default {
 
 <template>
 
-<main class="form-signin">
+<div >
+    <!-- <NavBar></NavBar> -->
   <!-- <form :class="this.isFieldInvalid ? 'hasErrors':''"> -->
-    <form>
->
+    <form class="form-signin">
+
     <img class="mb-4 d-block mx-auto" src="./../../../public/favicon.ico" alt="" width="72" height="57">
     <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
 
@@ -142,17 +149,13 @@ export default {
     </div> -->
     <button class="w-100 btn btn-lg btn-primary" type="submit"  @click.prevent="() => submitForm(this.email,this.password)">Sign in</button>
     <p class="mt-5 mb-3 text-muted">&copy; 2017–2021</p>
-    <p class="mt-5 mb-3 text-muted">Value:{{email}}</p>
-    <p class="mt-5 mb-3 text-muted">pwd:{{password}}</p>
+   
   </form>
-</main>
+</div>
 
 </template>
 
 <style scoped>
-
-
-
 .form-floating input:invalid{
   border: 1px solid red;
 }
