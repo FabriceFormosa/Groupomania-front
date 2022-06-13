@@ -59,7 +59,7 @@ export default{
               this.posts = posts 
               this.currentUser = email
 
-             // console.log("this.posts.user :",this.posts)
+             console.log("this.posts.user :",this.posts)
 
 
         this.posts.forEach(post => {
@@ -116,20 +116,17 @@ export default{
     <Postform></Postform>
 
     <div v-for="post in posts" >
+
     <Card 
-        
-        
-        :name="post.user.name"
-        :lastName="post.user.lastName"
-        :avatar="post.user.avatar"
-        :owner_post_email="post.user.email"
-        :content="post.content" 
-        :url="post.imageUrl" 
-        :comments="post.comments"
-        :id="post.id"
-      
-        
-        
+        :name_owner_post="post.user.name"
+        :last_name_owner_post="post.user.lastName"
+        :avatar_owner_post="post.user.avatar"
+        :email_owner_post="post.user.email"
+        :content_owner_post="post.content" 
+        :url_img_owner_post="post.imageUrl" 
+        :comments_owner_post="post.comments"
+        :id_owner_post="post.id"
+        :is_admin_owner_post="post.admin"
         >
     </Card></div>
 

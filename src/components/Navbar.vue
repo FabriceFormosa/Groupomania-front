@@ -10,7 +10,8 @@ export default {
       return {isLoggedIn:false,
               current_user_name:null,
               current_user_last_name:null,
-              current_user_admin:null
+              current_user_admin:null,
+              current_user_email:null
               }
   },
    mounted() {
@@ -29,6 +30,7 @@ export default {
               this.current_user_name=current_user.name
               this.current_user_last_name=current_user.lastName
               this.current_user_admin=current_user.admin
+              this.current_user_email=current_user.email
         }
        // console.log("this.current_user_name: ",this.current_user_name)
         
@@ -64,10 +66,10 @@ export default {
         
         <ul v-if="this.isLoggedIn" class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
           <li><router-link to ="/home" class="nav-link px-2 text-secondary">Home</router-link></li>
-          <li><router-link to ="/profile" class="nav-link px-2 text-secondary">Profile</router-link></li>
+          <li><router-link to ="/viewprofile" class="nav-link px-2 text-secondary">Profile</router-link></li>
           <li v-if=" current_user_admin =='true' "><router-link to ="/createprofile" class="nav-link px-2 text-secondary">Create Profile</router-link></li>
           <li v-if=" current_user_admin =='true' "><router-link to ="/updateprofile" class="nav-link px-2 text-secondary">Update Profile</router-link></li>
-          <li v-if=" current_user_admin =='true' "><router-link to ="/deleteprofile" class="nav-link px-2 text-secondary">Delete Profile</router-link></li>  
+          <!-- <li v-if=" current_user_admin =='true' "><router-link to ="/deleteprofile" class="nav-link px-2 text-secondary">Delete Profile</router-link></li>   -->
          <!--  -->
         </ul>
        
@@ -76,7 +78,7 @@ export default {
           <input type="search" class="form-control form-control-dark" placeholder="Search..." aria-label="Search">
         </form> -->
         <div><span>{{current_user_last_name}} {{current_user_name}} <i  v-if="current_user_admin == 'false'" class="fa-solid fa-user"></i> <i v-if=" current_user_admin == 'true'" class="fa-solid fa-user-gear"></i>
-         <i @click="logOut" v-if="this.isLoggedIn" class="fa-solid fa-arrow-right-from-bracket"></i></span></div>
+           <span>  <i @click="logOut" v-if="this.isLoggedIn" class="fa-solid fa-arrow-right-from-bracket"></i></span></span></div>
        
         <!-- <div class="text-end">
          

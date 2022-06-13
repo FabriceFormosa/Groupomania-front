@@ -21,41 +21,24 @@ export default{
     },
 	created() {
 
-           // console.log("--------idAvatar----------",this.$route.query.idAvatar);
-            const email = this.$route.query.idAvatar
+ 	if(this.$route.query.user_email != null)
+	{
+		
+		this.email = this.$route.query.user_email
+		console.log("url get one user by email: ",this.email)  
+		
 
-            this.current_user = JSON.parse( localStorage.getItem('current_user') );
+		const options={
+				headers:{
+					
+				authorization:`Bearer ${localStorage.getItem("token")}`
+				}
+			}
+			const {VITE_SERVER_ADDRESS,VITE_SERVER_PORT}= import.meta.env 
+			const url=`http://${VITE_SERVER_ADDRESS}:${VITE_SERVER_PORT}/users/getUser/${this.email}`
 
-            if( this.$route.query.idAvatar == undefined ) // appel de la  page via le menu
-            {
-	           
-
-                if( this.current_user!= null)
-                {
-                //this.id	 = current_user.id
-                this.email = this.current_user.email
-                this.name=this.current_user.name
-                this.lastName=this.current_user.lastName
-                this.admin=(this.current_user.admin=='true')?"compte modérateur":"compte utilisateur"
-                this.service=this.current_user.service
-                this.urlAvatar=this.current_user.avatar
-                }
-
-
-            }
-            else{
-
-                  const options={
-                     headers:{
-                         
-                        authorization:`Bearer ${localStorage.getItem("token")}`
-                        }
-                    }
-                    const {VITE_SERVER_ADDRESS,VITE_SERVER_PORT}= import.meta.env 
-                    const url=`http://${VITE_SERVER_ADDRESS}:${VITE_SERVER_PORT}/users/getUser/${email}`
-
-                 //   console.log("url get one user by email: " + url)  
-                    
+			console.log("url get one user by email: " + url)  
+        
 
         fetch(url,options)
            .then((res) => {
@@ -69,15 +52,16 @@ export default{
             }})
             .then(res => {
               const {user} = res
-           //   console.log(" user",user)
+              console.log(" mis à jour profil à supprimer ------------------ user :",user)
                 this.email = user.email
                 this.name=user.name
                 this.lastName=user.lastName
                 this.admin=(user.admin=='true')?"compte modérateur":"compte utilisateur"
                 this.service=user.service
                 this.urlAvatar=user.avatar
+				this.idUserdUser=user.id
 
-               // this.$router.go() //reload page
+                // this.$router.go() //reload page
 
               })
              
@@ -85,6 +69,24 @@ export default{
                 console.log(  "error", error )
             });
         }
+	
+    else
+    {
+		  var current_user = JSON.parse( localStorage.getItem('current_user') );
+
+		if( current_user!= null)
+        {
+			  this.id	 = current_user.id
+              this.email = current_user.email
+              this.name=current_user.name
+              this.lastName=current_user.lastName
+              this.admin=current_user.admin
+			  this.service=current_user.service
+			  this.urlAvatar=current_user.avatar
+			  console.log("this.urlAvatar",this.urlAvatar)
+			  this.widthAvatar = "30px"
+        }
+	}
     }
 }
 </script>
@@ -95,7 +97,10 @@ export default{
              <div class="card col-md-8 mb-3 mx-auto ">
                 <div class="card-body">
                   <div class="d-flex flex-column align-items-center text-center">
-                  <Avatar v-if="this.urlAvatar" :url="this.urlAvatar"></Avatar>
+                  <Avatar v-if="this.urlAvatar" 
+                  :url="this.urlAvatar"
+                  :inhibitViewProfile="true"
+                  ></Avatar>
                     <!-- <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Admin" class="rounded-circle" width="150"> -->
                     <div class="mt-3">
                       <h4>{{lastName}} {{name}}</h4>

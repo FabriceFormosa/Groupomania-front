@@ -1,7 +1,126 @@
 <script>
+
+import Avatar from "../Avatar.vue"
+
 export default {
-    name:"DeleteProfile"
-}
+    name:"DeleteProfile",
+	components:{Avatar},
+	data() // function data renvoie un objet
+	{
+	return{
+		email:null,
+		name:null,
+		lastName:null,
+		service:null,
+		admin:null,
+		urlAvatar:null,
+		idUser:null
+
+
+	}
+	},	
+	created(){
+
+	if(this.$route.query.user_email != null)
+	{
+		
+		this.email = this.$route.query.user_email
+		console.log("url get one user by email: ",this.email)  
+		
+
+		const options={
+				headers:{
+					
+				authorization:`Bearer ${localStorage.getItem("token")}`
+				}
+			}
+			const {VITE_SERVER_ADDRESS,VITE_SERVER_PORT}= import.meta.env 
+			const url=`http://${VITE_SERVER_ADDRESS}:${VITE_SERVER_PORT}/users/getUser/${this.email}`
+
+			console.log("url get one user by email: " + url)  
+        
+
+        fetch(url,options)
+           .then((res) => {
+            if(res.ok) 
+            {
+                return res.json()
+            }else
+            {
+                throw new Error("Failed to fetch get" )
+
+            }})
+            .then(res => {
+              const {user} = res
+              console.log(" mis à jour profil à supprimer ------------------ user :",user)
+                this.email = user.email
+                this.name=user.name
+                this.lastName=user.lastName
+                this.admin=(user.admin=='true')?"compte modérateur":"compte utilisateur"
+                this.service=user.service
+                this.urlAvatar=user.avatar
+				this.idUserdUser=user.id
+
+                // this.$router.go() //reload page
+
+              })
+             
+            .catch(error => {
+                console.log(  "error", error )
+            });
+        }
+	}
+	,
+	methods:{
+		deleteProfile()
+		{
+
+			console.log("appel fonction deleteProfile")
+
+			const {VITE_SERVER_ADDRESS,VITE_SERVER_PORT}= import.meta.env 
+        	const url=`http://${VITE_SERVER_ADDRESS}:${VITE_SERVER_PORT}/users`
+
+        
+        console.log("url :",url+"/"+this.idUserdUser)
+
+        const  options = {
+          method:'DELETE',
+          headers:{
+                authorization:`Bearer ${localStorage.getItem("token")}`,
+                "Accept":"application/json",
+                "Content-Type":"application/json"
+                },
+          body:JSON.stringify({
+               //comment:this.currentComment
+            })
+        }
+
+        fetch(url+"/"+this.idUserdUser,options)
+        .then((res) => {
+            if( res.status === 200 )
+            {
+              return res.json()
+            }else
+            {
+
+            throw new Error("Failed to delete User")
+            }
+
+        })
+        .then((res) => {
+          console.log(res)
+          this.$router.go() //reload page
+      
+        })
+       .catch((err) => {  console.log  })
+      }
+
+
+		}
+	}
+	
+
+
 </script>
 
 
@@ -11,47 +130,24 @@ export default {
 	<div class="col-lg-8 mx-auto mt-3">
 		<div class="card">
 						<div class="card-body">
-                            <!-- <i class="fa-solid fa-circle-camera"></i> -->
-                            <div class="mb-3 d-flex flex-column">
-                            <!-- <div class="d-flex flex-column align-items-center text-center"> -->
-                                <label for="file-input" >
-                                 <img src="https://mdbcdn.b-cdn.net/img/new/avatars/1.webp" alt="Admin" class="rounded-circle d-block shadow-4 mx-auto" width="150px"/>
-                                </label>
-                                <input id="file-input" type="file"/>
-                            <!-- </div> -->
-                           <!-- <i class="fa-solid fa-circle-camera"></i> -->
-                            <!-- <label for="file-input" ></label> -->
-                            <!-- <input id="file-input" type="file"/> -->
-                               <!-- <i class="bi bi-camera-fill"  ></i> -->
-                            </div>
+                           						<div class="row mb-3 ">
+								<div class="col-sm-3 ">
+									<h6 class="mb-0">Avatar</h6>
+								</div>
+								<div class="col-sm-9">
+									
+									<Avatar	
+									:url="this.urlAvatar"
+									 ></Avatar>
+								</div>
+							</div>
 
 							<div class="row mb-3">
 								<div class="col-sm-3">
 									<h6 class="mb-0">Email</h6>
 								</div>
 								<div class="col-sm-9 text-secondary">
-									<input type="email" 
-									class="form-control" 
-									placeholder="lastname.name@groupomania.fr" 
-									v-model="email"
-									required
-       								invalid
-									>
-								</div>
-							</div>
-
-							<div class="row mb-3">
-								<div class="col-sm-3">
-									<h6 class="mb-0">Password</h6>
-								</div>
-								<div class="col-sm-9 text-secondary">
-									<input type="password" 
-									class="form-control" 
-									placeholder="type a new password" 
-									v-model="password"
-									required
-       								invalid
-									>
+									<p class="text-secondary mb-1">{{email}}</p>
 								</div>
 							</div>
 
@@ -60,13 +156,7 @@ export default {
 									<h6 class="mb-0">Name</h6>
 								</div>
 								<div class="col-sm-9 text-secondary">
-									<input type="name" 
-									class="form-control" 
-									placeholder="type a new name" 
-									v-model="name"
-									required
-       								invalid
-									>
+									<p class="text-secondary mb-1">{{name}}</p>
 								</div>
 							</div>
 
@@ -75,13 +165,7 @@ export default {
 									<h6 class="mb-0">Last Name</h6>
 								</div>
 								<div class="col-sm-9 text-secondary">
-									<input type="lastName" 
-									class="form-control" 
-									placeholder="type a new last name" 
-									v-model="lastName"
-									required
-       								invalid
-									>
+									<p class="text-secondary mb-1">{{lastName}}</p>
 								</div>
 							</div>
 
@@ -90,13 +174,7 @@ export default {
 									<h6 class="mb-0">service</h6>
 								</div>
 								<div class="col-sm-9 text-secondary">
-									<input type="service" 
-									class="form-control" 
-									placeholder="which service" 
-									v-model="service"
-									required
-       								invalid
-									>
+									<p class="text-secondary mb-1">{{service}}</p>
 								</div>
 							</div>							
 							
@@ -105,13 +183,7 @@ export default {
 									<h6 class="mb-0">admin</h6>
 								</div>
 								<div class="col-sm-9 text-secondary">
-									<input type="admin" 
-									class="form-control" 
-									placeholder="false" 
-									v-model="admin"
-									required
-       								invalid
-									>
+									<p class="text-secondary mb-1">{{admin}}</p>
 								</div>
 							</div>
 
@@ -121,7 +193,7 @@ export default {
 							<div class="row">
 								
 								<div class="text-center text-secondary">
-									<input type="submit" class="btn btn-primary px-4" value="Update Profile"   @click.prevent="() => submitForm(this.id,this.email,this.password,this.name,this.lastName,this.service,this.admin)">
+									<input type="submit" class="btn btn-primary px-4" value="Delete Profile"   @click="deleteProfile"/>
 								</div>
 							</div>							
 

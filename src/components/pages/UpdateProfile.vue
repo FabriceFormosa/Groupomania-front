@@ -14,9 +14,11 @@ function data() // function data renvoie un objet
 	admin:null,
 	error:"",
 	selectedAvatar:null,
-	urlAvatar:null
+	urlAvatar:null,
+	inhibitViewProfile:true
 	
 	} 
+	
 }
 
 
@@ -27,7 +29,7 @@ const {VITE_SERVER_ADDRESS,VITE_SERVER_PORT}= import.meta.env
 //console.log("VITE_SERVER_ADDRESS :",import.meta.env.VITE_SERVER_ADDRESS)
 //console.log("VITE_SERVER_PORT :",import.meta.env.VITE_SERVER_PORT)
 
-const url=`http://${VITE_SERVER_ADDRESS}:${VITE_SERVER_PORT}/users/update`
+const url=`http://${VITE_SERVER_ADDRESS}:${VITE_SERVER_PORT}/users`
 //const  url="http://localhost:3000/auth/login"
 console.log("url ",url)
 
@@ -38,13 +40,13 @@ const user_datas ={id,email,password,name,lastName,service,admin}
 formData.append("user_datas",JSON.stringify(user_datas))
 
 const  options = {
-  method:'POST',
+  method:'PATCH',
    headers:{
                 authorization:`Bearer ${localStorage.getItem("token")}`,
                 "Accept":"application/json"
                 //"Content-Type": "multipart/form-data "
             },
-            method: 'POST',
+            
             body:formData
 }
 
@@ -96,9 +98,59 @@ export default {
 
 	created() {
 
+
+	if(this.$route.query.user_email != null)
+	{
+		
+		this.email = this.$route.query.user_email
+		console.log("url get one user by email: ",this.email)  
+		
+
+		const options={
+				headers:{
+					
+				authorization:`Bearer ${localStorage.getItem("token")}`
+				}
+			}
+			const {VITE_SERVER_ADDRESS,VITE_SERVER_PORT}= import.meta.env 
+			const url=`http://${VITE_SERVER_ADDRESS}:${VITE_SERVER_PORT}/users/getUser/${this.email}`
+
+			console.log("url get one user by email: " + url)  
+        
+
+        fetch(url,options)
+           .then((res) => {
+            if(res.ok) 
+            {
+                return res.json()
+            }else
+            {
+                throw new Error("Failed to fetch get" )
+
+            }})
+            .then(res => {
+              const {user} = res
+              console.log(" mis à jour profil à supprimer ------------------ user :",user)
+                this.email = user.email
+                this.name=user.name
+                this.lastName=user.lastName
+                this.admin=(user.admin=='true')?"compte modérateur":"compte utilisateur"
+                this.service=user.service
+                this.urlAvatar=user.avatar
+				this.idUserdUser=user.id
+
+                // this.$router.go() //reload page
+
+              })
+             
+            .catch(error => {
+                console.log(  "error", error )
+            });
+        }
+	else{
 		  var current_user = JSON.parse( localStorage.getItem('current_user') );
 
-		    if( current_user!= null)
+		if( current_user!= null)
         {
 			  this.id	 = current_user.id
               this.email = current_user.email
@@ -110,6 +162,7 @@ export default {
 			  console.log("this.urlAvatar",this.urlAvatar)
 			  this.widthAvatar = "30px"
         }
+	}
 	},
 
 	
@@ -146,7 +199,10 @@ methods:{
 									<input id="file-input" type="file" @change="handleNewFile"/>
 									<!-- <i v-if="!this.urlAvatar" class="fa-solid fa-circle-user "></i> -->
 									<!-- <Avatar v-if="this.urlAvatar" :url="this.urlAvatar" > -->
-									<Avatar	:url="this.urlAvatar" ></Avatar>
+									<Avatar	
+									:url="this.urlAvatar"
+									:inhibitViewProfile="this.inhibitViewProfile"
+									 ></Avatar>
 									
 									<!-- <img  id="image_post" v-if="urlAvatar"  :src="urlAvatar" class="card-img-top" alt="..." /> -->
 									</label>

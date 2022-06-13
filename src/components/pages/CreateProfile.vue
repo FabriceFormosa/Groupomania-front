@@ -1,5 +1,6 @@
 <script>
 import NavBar from "../Navbar.vue";
+import Avatar from "../Avatar.vue";
 
 function data() // function data renvoie un objet
 {
@@ -10,7 +11,11 @@ function data() // function data renvoie un objet
 	lastName:null,
 	service:null,
 	admin:null,
-	error:""
+	error:"",
+	urlAvatar:null,
+	selectedAvatar:null,
+ 	inhibitViewProfile:true
+
 	
 	} 
 }
@@ -26,13 +31,21 @@ const {VITE_SERVER_ADDRESS,VITE_SERVER_PORT}= import.meta.env
 const url=`http://${VITE_SERVER_ADDRESS}:${VITE_SERVER_PORT}/users/create`
 //const  url="http://localhost:3000/auth/login"
 console.log("url ",url)
+
+const  formData=new FormData();
+formData.append("image",this.selectedAvatar)
+const user_datas ={email,password,name,lastName,service,admin}
+formData.append("user_datas",JSON.stringify(user_datas))
+
 const  options = {
   method:'POST',
   headers:{
 	  authorization:`Bearer ${localStorage.getItem("token")}`,
 	  "Accept":"application/json"
 	  },
-  body:JSON.stringify({email,password,name,lastName,service,admin})
+  
+  //body:JSON.stringify({email,password,name,lastName,service,admin})
+  body:formData
 }
 //console.log( "body",body)
 
@@ -72,12 +85,23 @@ fetch(url,options)
 export default {
 	
     name:"CreateProfile",
-	components: { NavBar },
+	components: { NavBar,Avatar },
 	data , //function data 
 methods:{
-   	submitForm
+   	submitForm,
+	 handleNewFile(e)
+      {
+        const file = e.target.files[0]
+        console.log("file :",file)
+        this.selectedAvatar = file
+      }
+
+},
+created(){
+	this.urlAvatar=null;
 
 }
+ 
  
 
 }
@@ -97,20 +121,26 @@ methods:{
              
 						<form class="card-body">
                             
-                            <!-- <div class="mb-3 d-flex flex-column">
-                               	<label for="file-input" >
-                                <img src="https://mdbcdn.b-cdn.net/img/new/avatars/1.webp" alt="Admin" class="rounded-circle d-block shadow-4 mx-auto" width="150px"/>
-                                </label>
-                                <input id="file-input" type="file"/>
-                            </div> -->
+                       <div class="row mb-3 ">
+								<div class="col-sm-3 ">
+									<h6 class="mb-0">Avatar</h6>
+								</div>
+								<div class="col-sm-9">
+									<label for="file-input" >
+									<input id="file-input" type="file" @change="handleNewFile"/>
+									<!-- <i v-if="!this.urlAvatar" class="fa-solid fa-circle-user "></i> -->
+									<!-- <Avatar v-if="this.urlAvatar" :url="this.urlAvatar" > -->
+									<Avatar	
+										:url="this.urlAvatar" 
+										:inhibitViewProfile="inhibitViewProfile"
+									></Avatar>
+									
 
-	         			<div class="test_avatar">
-                            <!-- <i class="fa-solid fa-circle-camera"></i> -->
-                   				<label for="file-input" class="btn btn-secondary mt-1">Add Image</label>
-  								<input id="file-input" type="file" />
-								  <i  class="fa-solid fa-user"></i>
-                                <!-- <i class="bi bi-camera-fill"  ></i> -->
-						</div> 
+									<!-- <img  id="image_post" v-if="urlAvatar"  :src="urlAvatar" class="card-img-top" alt="..." /> -->
+									</label>
+									
+								</div>
+							</div>
 
 							<div class="row mb-3">
 								<div class="col-sm-3">

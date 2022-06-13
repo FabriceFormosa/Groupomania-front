@@ -4,44 +4,66 @@ import Avatar from "./Avatar.vue"
 export default{
     name:"Card",
     components:{Comment,Avatar},
-    props:["name","lastName","avatar","owner_post_email","content","url","comments","id","admin"],
+    props:[
+        "name_owner_post",               // name propriétaire du post
+        "last_name_owner_post",          // lastName propriétaire du post
+        "avatar_owner_post",             // avatar propriétaire du post
+        "email_owner_post",              // email propriétaire du post
+        "content_owner_post",            // contenu texte du propriétaire du post
+        "url_img_owner_post",            // url image propriétaire du post
+        "comments_owner_post",           // commentaires associés au propriétaire du post
+        "id_owner_post",                 // id proprietaire du post
+        "is_admin_owner_post"            // proprietaire du post admin ?
+        ], 
     data() {
       return {
         currentComment:null,
-        currentUserAvatar:null,
+        current_user_avatar:null,
         current_user_email:null,
+        current_user_admin:false,
         modeEditPost:false,
-        contentPost:null
+        contentPost:null,
+        contentPostModified:null
        
       }
     },
     mounted(){
    
           this.current_user = JSON.parse( localStorage.getItem('current_user') );
-          // console.log("owner_post_email",this.$props.owner_post_email)
+          // console.log("email_owner_post",this.$props.email_owner_post)
           // console.log("this.current_user",this.current_user.email)
 
 		    if( this.current_user!= null)
         {
-			       this.currentUserAvatar=this.current_user.avatar
+			       this.current_user_avatar=this.current_user.avatar
              this.current_user_email=this.current_user.email
+             this.current_user_admin=this.current_user.admin
         }
 
-        //
-        this.contentPost = this.$props.content
+        // Init
+        this.contentPost = this.$props.content_owner_post
+        this.contentPostModified = this.$props.content_owner_post
 
        
 
     },
     
     methods:{
+
+
+       viewProfile(){
+        console.log("appel methode view profile : this.$props.email_owner_post" ,this.$props.email_owner_post)
+        this.$router.push({path:'/viewprofile',query:{user_email: this.$props.email_owner_post}});
+
+       },
+      
       addComent(){
 
         const {VITE_SERVER_ADDRESS,VITE_SERVER_PORT}= import.meta.env 
         const url=`http://${VITE_SERVER_ADDRESS}:${VITE_SERVER_PORT}/posts`
 
-        console.log(this.currentComment,this.$props.id)
-        console.log("url :",url+"/"+this.$props.id)
+        console.log(this.currentComment,this.$props.id_owner_post)
+        console.log("url :",url+"/"+this.$props.id_owner_post)
 
         const  options = {
           method:'POST',
@@ -55,7 +77,7 @@ export default{
             })
         }
 
-        fetch(url+"/"+this.$props.id,options)
+        fetch(url+"/"+this.$props.id_owner_post,options)
         .then((res) => {
             if( res.status === 200 )
             {
@@ -82,7 +104,7 @@ export default{
         const url=`http://${VITE_SERVER_ADDRESS}:${VITE_SERVER_PORT}/posts`
 
         
-        console.log("url :",url+"/"+this.$props.id)
+        console.log("url :",url+"/"+this.$props.id_owner_post)
 
         const  options = {
           method:'DELETE',
@@ -96,7 +118,7 @@ export default{
             })
         }
 
-        fetch(url+"/"+this.$props.id,options)
+        fetch(url+"/"+this.$props.id_owner_post,options)
         .then((res) => {
             if( res.status === 200 )
             {
@@ -121,7 +143,60 @@ export default{
         this.modeEditPost = !this.modeEditPost
         console.log( "click editPost",this.modeEditPost)
 
+      },
+      updatePost()
+      {
+          const {VITE_SERVER_ADDRESS,VITE_SERVER_PORT}= import.meta.env 
+        const url=`http://${VITE_SERVER_ADDRESS}:${VITE_SERVER_PORT}/posts`
+
+        
+        console.log("url :",url+"/"+this.$props.id_owner_post)
+
+        const  options = {
+          method:'PATCH',
+          headers:{
+                authorization:`Bearer ${localStorage.getItem("token")}`,
+                "Accept":"application/json",
+                "Content-Type":"application/json"
+                },
+          body:JSON.stringify({
+               contentUpdated:this.contentPostModified
+            })
+        }
+
+        fetch(url+"/"+this.$props.id_owner_post,options)
+        .then((res) => {
+            if( res.status === 200 )
+            {
+              return res.json()
+            }else
+            {
+
+            throw new Error("Failed to update Post")
+            }
+
+        })
+        .then((res) => {
+          console.log(res)
+          this.$router.go() //reload page
+      
+        })
+       .catch((err) => {  console.log  })
       }
+      ,
+      DeleteProfile()
+      {
+        console.log("appel methode view profile : this.$props.email_owner_post" ,this.$props.email_owner_post)
+        this.$router.push({path:'/deleteprofile',query:{user_email: this.$props.email_owner_post}});
+        
+      },
+       UpdateProfile()
+      {
+        console.log("appel methode view profile : this.$props.email_owner_post" ,this.$props.email_owner_post)
+        this.$router.push({path:'/updateprofile',query:{user_email: this.$props.email_owner_post}});
+        
+      }
+      
      
 
 
@@ -135,27 +210,31 @@ export default{
     <div class="card-header">
 
   <!-- <img src="https://mdbcdn.b-cdn.net/img/new/avatars/1.webp" class="rounded-circle" alt="Avatar" /> -->
-  <Avatar
-  
-  :url="this.$props.avatar"
-  :owner_post_email="this.$props.owner_post_email"
-  
+ <div @click="viewProfile" > 
+ 
+  <Avatar 
+      :url="$props.avatar_owner_post"
   ></Avatar>
-  <span>{{this.$props.lastName}} {{this.$props.name}}</span><span><i class="fa-solid fa-trash" v-if="current_user_email === this.$props.owner_post_email || this.$props.admin =='true'" @click="deletePost"></i></span><span><i v-if="current_user_email === this.$props.owner_post_email || this.$props.admin =='true'" class="fa-solid fa-pen-to-square"  @click="editPost"></i> <i v-if="modeEditPost" class="fa-solid fa-floppy-disk"></i></span>
+  </div>
+ <span><i v-if="current_user_email === this.$props.email_owner_post || current_user_admin =='true'" class="fa-solid fa-pen-to-square"  @click="UpdateProfile"></i> <i v-if="modeEditPost" class="fa-solid fa-floppy-disk" @click="updatePost"></i></span><span><i v-if="current_user_admin =='true'" class="fa-solid fa-user-slash" @click="DeleteProfile"></i></span>
+  <span>{{$props.last_name_owner_post}} {{$props.name_owner_post}}</span><span><i class="fa-solid fa-trash" v-if="current_user_email === this.$props.email_owner_post || current_user_admin =='true'" @click="deletePost"></i></span><span><i v-if="current_user_email === this.$props.email_owner_post || current_user_admin =='true'" class="fa-solid fa-pen-to-square"  @click="editPost"></i> <i v-if="modeEditPost" class="fa-solid fa-floppy-disk" @click="updatePost"></i></span>
   <!-- <span><button type="button" v-if="currentUser === email || admin =='true' " class="btn btn-primary s-auto rounded-pill" @click="deletePost">Delete</button></span> 
   -->
 </div>
-<img  id="image_post" v-if="url"  :src="url" class="card-img-top" alt="..." />
+<img  id="image_post" v-if="url_img_owner_post"  :src="url_img_owner_post" class="card-img-top" alt="..." />
 
   
   <div class="card-body">
      <h5 class="card-title"></h5>
-     <p class="card-text">
+     <p v-if="modeEditPost == false" class="card-text">
         {{contentPost}}
      </p>
+     <div v-if="modeEditPost == true" class="form-floating mt-4">
+        <input  class="form-control py-3"  v-model="contentPostModified"/>
+    </div>
      <!-- <p class="card-text"><small class="text-muted">Last updated3mins ago</small></p> -->
 
-     <div v-for="comment in comments" >
+     <div v-for="comment in comments_owner_post" >
        <p></p>
      <Comment 
           :email="comment.user.email" 
@@ -167,7 +246,7 @@ export default{
 
     <div class="d-flex gap-1">
       <Avatar 
-      :url="this.currentUserAvatar"
+      :url="this.current_user_avatar"
       ></Avatar>
       
       <input type="text" class="form-control" placeholder="Username" aria-label="Username" v-model="currentComment"/>

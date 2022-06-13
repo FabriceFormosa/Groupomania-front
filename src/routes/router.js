@@ -12,7 +12,7 @@ const routes=[
     {path:"/login",component:Login},
  //   {path:"/signup",component:Login},
     {path:"/home",component:Wall},
-    {path:"/profile",component:Profile},
+    {path:"/viewprofile",component:Profile},
     {path:"/createprofile",component:CreateProfile},
     {path:"/updateprofile",component:UpdateProfile},
     {path:"/deleteprofile",component:DeleteProfile},
