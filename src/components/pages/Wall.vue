@@ -29,6 +29,8 @@ export default{
         }
     },
     mounted(){
+
+        console.log("-------------- log page Wall.vue mounted -------------------")
         const options={
             headers:{
                 authorization:`Bearer ${localStorage.getItem("token")}`
@@ -59,7 +61,7 @@ export default{
               this.posts = posts 
               this.currentUser = email
 
-             console.log("this.posts.user :",this.posts)
+             //console.log("this.posts.user :",this.posts)
 
 
         this.posts.forEach(post => {
@@ -109,11 +111,12 @@ export default{
 }
 </script>
 <template>
-<!-- <NavBar>  </NavBar>  -->
+<NavBar>  </NavBar> 
 
 
 <div v-if="currentUser" class="container-sm mt-5">
-    <Postform></Postform>
+    <Postform>
+    </Postform>
 
     <div v-for="post in posts" >
 
@@ -127,6 +130,7 @@ export default{
         :comments_owner_post="post.comments"
         :id_owner_post="post.id"
         :is_admin_owner_post="post.admin"
+        :createdAt="post.createdAt"
         >
     </Card></div>
 
@@ -139,6 +143,6 @@ export default{
 <style scoped>
 
 .card{
-width: 20rem;
+width: 30rem;
 }
 </style>

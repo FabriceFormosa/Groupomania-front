@@ -2,6 +2,7 @@
 import NavBar from "../Navbar.vue";
 import Avatar from "../Avatar.vue";
 
+
 function data() // function data renvoie un objet
 {
   return{
@@ -11,11 +12,12 @@ function data() // function data renvoie un objet
 	name:null,
 	lastName:null,
 	service:null,
-	admin:null,
+	admin:'false',
 	error:"",
 	selectedAvatar:null,
 	urlAvatar:null,
-	inhibitViewProfile:true
+	show_pwd:false,
+	isReadOnly:false
 	
 	} 
 	
@@ -37,6 +39,7 @@ console.log("url ",url)
 const  formData=new FormData();
 formData.append("image",this.selectedAvatar)
 const user_datas ={id,email,password,name,lastName,service,admin}
+console.log( "update Profile :",user_datas)
 formData.append("user_datas",JSON.stringify(user_datas))
 
 const  options = {
@@ -70,7 +73,9 @@ fetch(url,options)
  })
  .then((res) => { 
    console.log("update user res: ",res)
-    const {updateUser} =res
+    const updateUser =res.updateUser
+	console.log("update user updateUser: ",updateUser)
+
    this.urlAvatar = updateUser.avatar
     console.log("urlAvatar :",this.urlAvatar)
 
@@ -98,6 +103,13 @@ export default {
 
 	created() {
 
+		this.show_pwd = false
+		var current_user = JSON.parse( localStorage.getItem('current_user') );
+		console.log("-------------------------current_user.admin", current_user.admin)
+		this.admin=current_user.admin
+		console.log("-------------------------this.admin", this.admin)
+		if( this.admin=='true') 
+			this.isReadOnly = false;
 
 	if(this.$route.query.user_email != null)
 	{
@@ -134,10 +146,10 @@ export default {
                 this.email = user.email
                 this.name=user.name
                 this.lastName=user.lastName
-                this.admin=(user.admin=='true')?"compte modérateur":"compte utilisateur"
+                this.admin=user.admin
                 this.service=user.service
                 this.urlAvatar=user.avatar
-				this.idUserdUser=user.id
+				this.id=user.id
 
                 // this.$router.go() //reload page
 
@@ -148,7 +160,7 @@ export default {
             });
         }
 	else{
-		  var current_user = JSON.parse( localStorage.getItem('current_user') );
+		  
 
 		if( current_user!= null)
         {
@@ -166,26 +178,39 @@ export default {
 	},
 
 	
-	data , //function data 
-methods:{
+	data ,  //function data 
 	
+methods:{
+
+		
 	  handleNewFile(e)
       {
         const file = e.target.files[0]
         console.log("file :",file)
         this.selectedAvatar = file
       },
-   	submitForm
+   	submitForm,
+	showPwd(){
+		console.log("fonction showPwd")
+		this.show_pwd = true
+
+	},
+ 	hidePwd(){
+	console.log("fonction hidePwd")
+		this.show_pwd = false
+
+	}
+}
 
 }
- 
 
-}
+
 </script>
 
 
 <!-- https://www.bootdey.com/snippets/view/profile-edit-data-and-skills#html -->
 <template>	
+<NavBar></NavBar> 
 
 	<div class="col-lg-8 mx-auto mt-3">
 		<div class="card">
@@ -201,7 +226,6 @@ methods:{
 									<!-- <Avatar v-if="this.urlAvatar" :url="this.urlAvatar" > -->
 									<Avatar	
 									:url="this.urlAvatar"
-									:inhibitViewProfile="this.inhibitViewProfile"
 									 ></Avatar>
 									
 									<!-- <img  id="image_post" v-if="urlAvatar"  :src="urlAvatar" class="card-img-top" alt="..." /> -->
@@ -221,6 +245,8 @@ methods:{
 									v-model="email"
 									required
        								invalid
+									 v-bind:readonly="isReadOnly"
+									
 									>
 								</div>
 							</div>
@@ -229,14 +255,24 @@ methods:{
 								<div class="col-sm-3">
 									<h6 class="mb-0">Password</h6>
 								</div>
-								<div class="col-sm-9 text-secondary">
-									<input type="password" 
+								<div class="col-sm-8 text-secondary">
+									<input v-if="!this.show_pwd"  type="password" 
 									class="form-control" 
-									placeholder="type a new password" 
+									placeholder="type a new password please" 
 									v-model="password"
 									required
        								invalid
 									>
+									<input v-if="this.show_pwd"  type="text" 
+									class="form-control" 
+									placeholder="type a new password please" 
+									v-model="password"
+									required
+       								invalid
+									>
+								</div>
+								<div class="col-sm-1 text-secondary">
+								<span><i v-if="!this.show_pwd" class="fa-regular fa-eye-slash" @click="showPwd"></i><i v-if="this.show_pwd" class="fa-regular fa-eye" @click="hidePwd"></i></span>
 								</div>
 							</div>
 
@@ -285,7 +321,7 @@ methods:{
 								</div>
 							</div>							
 							
-							<div class="row mb-3">
+							<div v-if="this.admin =='true' " class="row mb-3">
 								<div class="col-sm-3">
 									<h6 class="mb-0">admin</h6>
 								</div>
@@ -296,6 +332,7 @@ methods:{
 									v-model="admin"
 									required
        								invalid
+									 v-bind:readonly="isReadOnly"
 									>
 								</div>
 							</div>
@@ -305,8 +342,8 @@ methods:{
                                          
 							<div class="row">
 								
-								<div class="text-center text-secondary">
-									<input type="submit" class="btn btn-primary px-4" value="Update Profile"   @click.prevent="() => submitForm(this.id,this.email,this.password,this.name,this.lastName,this.service,this.admin)">
+								<div class="text-center text-dark">
+									<input type="submit" class="btn btn-color px-4" value="Update Profile"   @click.prevent="() => submitForm(this.id,this.email,this.password,this.name,this.lastName,this.service,this.admin)">
 								</div>
 							</div>
 						</div>
@@ -317,6 +354,12 @@ methods:{
 </template>
 <style scoped>
 
+.btn-color
+{
+	background-color: #FFD7D7;
+	border-color: #4E5166;
+
+}
 
 body{
     background: #f7f7ff;
@@ -384,6 +427,9 @@ img:hover
        display: none;
    }
 
+i{
+	cursor:pointer
+}
 
 
 

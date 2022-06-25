@@ -3,13 +3,13 @@
 <script>
 
 //import Login from "./components/pages/Login.vue";
-import NavBar from "./components/Navbar.vue";
+//import NavBar from "./components/Navbar.vue";
 
 export default {
   name:"App",
   components:{
   //  Login,
-    NavBar
+  //  NavBar
   }
 }
 
@@ -19,14 +19,14 @@ export default {
 
 <!-- <h1>Welcome to Groupomania</h1> -->
 
-<NavBar></NavBar>
+<!-- <NavBar></NavBar> -->
 <router-view></router-view>
 
 </template>
 
 <style>
 body{
-  background-color:darkgrey;
+  background-color:#4E5166;
 }
 </style>
 

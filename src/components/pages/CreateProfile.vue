@@ -13,8 +13,7 @@ function data() // function data renvoie un objet
 	admin:null,
 	error:"",
 	urlAvatar:null,
-	selectedAvatar:null,
- 	inhibitViewProfile:true
+	selectedAvatar:null
 
 	
 	} 
@@ -114,7 +113,7 @@ created(){
 
 
 	
-	<!-- <NavBar></NavBar> -->
+	<NavBar></NavBar>
 	
 	<div class="col-lg-8 mx-auto mt-3">
 		<div class="card">
@@ -132,7 +131,6 @@ created(){
 									<!-- <Avatar v-if="this.urlAvatar" :url="this.urlAvatar" > -->
 									<Avatar	
 										:url="this.urlAvatar" 
-										:inhibitViewProfile="inhibitViewProfile"
 									></Avatar>
 									
 

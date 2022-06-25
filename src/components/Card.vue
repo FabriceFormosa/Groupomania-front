@@ -13,7 +13,8 @@ export default{
         "url_img_owner_post",            // url image propriétaire du post
         "comments_owner_post",           // commentaires associés au propriétaire du post
         "id_owner_post",                 // id proprietaire du post
-        "is_admin_owner_post"            // proprietaire du post admin ?
+        "is_admin_owner_post",           // proprietaire du post admin ?
+        "createdAt"                      // date de création du post
         ], 
     data() {
       return {
@@ -43,6 +44,7 @@ export default{
         // Init
         this.contentPost = this.$props.content_owner_post
         this.contentPostModified = this.$props.content_owner_post
+       
 
        
 
@@ -207,28 +209,36 @@ export default{
 <template>
 <div class="card mb-3 m-auto">
 
-    <div class="card-header">
+    <div class="card-header d-flex justify-content-between">
 
   <!-- <img src="https://mdbcdn.b-cdn.net/img/new/avatars/1.webp" class="rounded-circle" alt="Avatar" /> -->
+
+
  <div @click="viewProfile" > 
- 
-  <Avatar 
-      :url="$props.avatar_owner_post"
-  ></Avatar>
+    <Avatar 
+        :url="$props.avatar_owner_post"
+    ></Avatar>
+    <span><i v-if="current_user_email === this.$props.email_owner_post || current_user_admin =='true'" class="fa-solid fa-pen-to-square ps-2"  @click="UpdateProfile"></i></span><span><i v-if="current_user_admin =='true'" class="fa-solid fa-user-slash ps-2" @click="DeleteProfile"></i></span>
   </div>
- <span><i v-if="current_user_email === this.$props.email_owner_post || current_user_admin =='true'" class="fa-solid fa-pen-to-square"  @click="UpdateProfile"></i> <i v-if="modeEditPost" class="fa-solid fa-floppy-disk" @click="updatePost"></i></span><span><i v-if="current_user_admin =='true'" class="fa-solid fa-user-slash" @click="DeleteProfile"></i></span>
-  <span>{{$props.last_name_owner_post}} {{$props.name_owner_post}}</span><span><i class="fa-solid fa-trash" v-if="current_user_email === this.$props.email_owner_post || current_user_admin =='true'" @click="deletePost"></i></span><span><i v-if="current_user_email === this.$props.email_owner_post || current_user_admin =='true'" class="fa-solid fa-pen-to-square"  @click="editPost"></i> <i v-if="modeEditPost" class="fa-solid fa-floppy-disk" @click="updatePost"></i></span>
-  <!-- <span><button type="button" v-if="currentUser === email || admin =='true' " class="btn btn-primary s-auto rounded-pill" @click="deletePost">Delete</button></span> 
-  -->
+  <div>
+  <span class="fw-bold">{{$props.last_name_owner_post}} {{$props.name_owner_post}}</span>
+  </div>
+  <div>
+  <span><i class="fa-solid fa-trash pe-2" v-if="current_user_email === this.$props.email_owner_post || current_user_admin =='true'" @click="deletePost"></i></span><span><i v-if="current_user_email === this.$props.email_owner_post || current_user_admin =='true'" class="fa-solid fa-pen-to-square"  @click="editPost"></i> <i v-if="modeEditPost" class="fa-solid fa-floppy-disk" @click="updatePost"></i></span>
+  </div>
 </div>
-<img  id="image_post" v-if="url_img_owner_post"  :src="url_img_owner_post" class="card-img-top" alt="..." />
+<p class="pt-2 fs-6 text-muted ">{{createdAt}}</p>
+<img  id="image_post" v-if="url_img_owner_post"  :src="url_img_owner_post" class="card-img-top py-2" alt="image du post" />
 
   
   <div class="card-body">
+     
+
      <h5 class="card-title"></h5>
-     <p v-if="modeEditPost == false" class="card-text">
+     <p v-if="modeEditPost == false" class="card-text comment_text p-2">
         {{contentPost}}
      </p>
+      
      <div v-if="modeEditPost == true" class="form-floating mt-4">
         <input  class="form-control py-3"  v-model="contentPostModified"/>
     </div>
@@ -240,6 +250,7 @@ export default{
           :email="comment.user.email" 
           :content="comment.content"
           :urlAvatar="comment.user.avatar" 
+          :createdAt="comment.createdAt"
      ></Comment>
       <p></p>
      </div>
@@ -249,7 +260,7 @@ export default{
       :url="this.current_user_avatar"
       ></Avatar>
       
-      <input type="text" class="form-control" placeholder="Username" aria-label="Username" v-model="currentComment"/>
+      <input type="text" class="form-control" placeholder="Un petit commentaire..." aria-label="Username" v-model="currentComment"/>
       <span><i  class="fa-solid fa-paper-plane"   @click="addComent"></i></span>
       
     </div>
@@ -272,6 +283,7 @@ export default{
   display: flex;
   align-items: center;
   gap: 1rem;
+  background-color: #FFD7D7;
 }
 
 
@@ -289,5 +301,12 @@ export default{
 
 i{
   cursor: pointer;
+}
+
+.comment_text
+{
+    background-color:aquamarine;
+    border-radius:3px;
+    width:100%;
 }
 </style>

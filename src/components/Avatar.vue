@@ -4,7 +4,7 @@ export default{
     props:["url","width"],
       data(){
         return { 
-        inhibit_ViewProfile:false
+        //inhibit_ViewProfile:false
         }
     },
    
@@ -22,8 +22,8 @@ i{
     cursor:pointer;
 }
 img{
-    width:30px;
-    height: 30px;
+    width:35px;
+    height: 35px;
     border:1px;
     border-color: black;
     cursor:pointer;

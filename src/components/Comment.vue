@@ -13,6 +13,10 @@ export default {
         },
         urlAvatar:{
           type:String
+        },
+        createdAt:{
+        type:String,
+        required:true
         }
     },
      data() {
@@ -48,6 +52,8 @@ export default {
     
     <p>{{fullName}}</p>
     <p>{{content}}</p>
+    <br />
+    <p class="fs-6 text-muted">{{createdAt}}</p>
  </div>
  </div>
    

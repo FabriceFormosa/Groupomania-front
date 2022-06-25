@@ -2,10 +2,11 @@
 <script>
 
 import Avatar from "../Avatar.vue";
+import NavBar from "../NavBar.vue";
 
 export default{
     name:"Profile",
-    components:{Avatar},
+    components:{Avatar,NavBar},
     data(){
         return { 
         current_user:null,
@@ -14,12 +15,14 @@ export default{
         lastName:null,
         admin:null,
         service:null,
-        urlAvatar:null
+        urlAvatar:null,
+        idUser:null
 
 
         }
     },
 	created() {
+        var current_user = JSON.parse( localStorage.getItem('current_user') );
 
  	if(this.$route.query.user_email != null)
 	{
@@ -53,13 +56,14 @@ export default{
             .then(res => {
               const {user} = res
               console.log(" mis à jour profil à supprimer ------------------ user :",user)
+
                 this.email = user.email
                 this.name=user.name
                 this.lastName=user.lastName
                 this.admin=(user.admin=='true')?"compte modérateur":"compte utilisateur"
                 this.service=user.service
                 this.urlAvatar=user.avatar
-				this.idUserdUser=user.id
+				this.idUser=user.id
 
                 // this.$router.go() //reload page
 
@@ -72,25 +76,29 @@ export default{
 	
     else
     {
-		  var current_user = JSON.parse( localStorage.getItem('current_user') );
+		  
 
 		if( current_user!= null)
         {
-			  this.id	 = current_user.id
+
+			  this.idUser	 = current_user.id
               this.email = current_user.email
               this.name=current_user.name
               this.lastName=current_user.lastName
-              this.admin=current_user.admin
+              this.admin=(current_user.admin == "false")?"Compte Utilisateur":"Compte Administrateur"
 			  this.service=current_user.service
 			  this.urlAvatar=current_user.avatar
-			  console.log("this.urlAvatar",this.urlAvatar)
-			  this.widthAvatar = "30px"
+
+			//  console.log("this.urlAvatar",this.urlAvatar)
+			 // this.widthAvatar = "30px"
         }
 	}
     }
 }
 </script>
-<template><div class="container">
+<template>
+<NavBar></NavBar> 
+<div class="container">
     <div class="main-body">
    
           <div class="row gutters-sm center-sm ">
@@ -99,7 +107,6 @@ export default{
                   <div class="d-flex flex-column align-items-center text-center">
                   <Avatar v-if="this.urlAvatar" 
                   :url="this.urlAvatar"
-                  :inhibitViewProfile="true"
                   ></Avatar>
                     <!-- <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Admin" class="rounded-circle" width="150"> -->
                     <div class="mt-3">
@@ -195,8 +202,5 @@ body{
 }
 
 
-/* ul h6 {
-    margin-right: auto;
-    margin-left: 1rem;
-} */
+
 </style>
