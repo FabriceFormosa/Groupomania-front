@@ -61,7 +61,7 @@ export default{
               this.posts = posts 
               this.currentUser = email
 
-             //console.log("this.posts.user :",this.posts)
+             console.log("this.posts :",this.posts)
 
 
         this.posts.forEach(post => {
@@ -129,7 +129,6 @@ export default{
         :url_img_owner_post="post.imageUrl" 
         :comments_owner_post="post.comments"
         :id_owner_post="post.id"
-        :is_admin_owner_post="post.admin"
         :createdAt="post.createdAt"
         >
     </Card></div>
@@ -142,7 +141,4 @@ export default{
 </template>
 <style scoped>
 
-.card{
-width: 30rem;
-}
 </style>

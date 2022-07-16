@@ -10,7 +10,7 @@ function data() // function data renvoie un objet
     //email:"prenom.nom@groupomania.fr",
     // password:"password",
      isFieldInvalid:false,
-     error:"",
+     error:null,
      selectedAvatar:null,
      msg:null,
      dspFormSignUp:true,
@@ -21,7 +21,9 @@ function data() // function data renvoie un objet
      service:null,
      name:null,
      lastName:null,
-     urlAvatar:null
+     urlAvatar:null,
+     isTokenValid:false,
+     imageDataAvatar:null
 
      } 
 }
@@ -32,6 +34,7 @@ function signUp(email,password,confirmPassword,name,lastName,service){
   const url=`http://${VITE_SERVER_ADDRESS}:${VITE_SERVER_PORT}/users/signUp`
 
   const admin = "false";
+  this.imageDataAvatar = null;
   const  formData=new FormData();
   formData.append("image",this.selectedAvatar)
   const user_datas ={email,password,confirmPassword,admin,name,lastName,service}
@@ -147,6 +150,8 @@ fetch(url,options)
     this.dspFormSignUp=true;
  }
 
+ 
+
 export default {
     name:"Login",
     data , //function data 
@@ -156,44 +161,62 @@ export default {
     invalidField,
     showFormSignIn,
     showFormSignUp,
-	  handleNewFile(e)
-      {
+    	         onSelectFileAvatar() {
+            const input = this.$refs.fileInput;
+			console.log("input:",input)
+            const files = input.files;
+			console.log("files[0]:",files[0])
+			
+            if (files && files[0]) {
+                this.selectedAvatar = files[0];
+                const reader = new FileReader;
+                reader.onload = e => {
+                    this.imageDataAvatar = e.target.result;
+                    console.log("e:",e)
+                };
+                reader.readAsDataURL(files[0]);
+               // this.$emit("input", files[0]);
+            }
+        }
+    // handleNewFile(e)
+    //   {
         
-        const file = e.target.files[0]
-        console.log("----------- Avatar file SignUp ------------------------:",file)
+    //     const file = e.target.files[0]
+    //     console.log("----------- Avatar file SignUp ------------------------:",file)
        
-         console.log("----------- Avatar file SignUp Path ------------------------:",path)
-         this.selectedAvatar = file;
-        const  formData=new FormData();
-        formData.append("image",this.selectedAvatar)
-        console.log("------------------+. - formdata ----------:",formData)
+    //      console.log("----------- Avatar file SignUp Path ------------------------:",path)
+    //      this.selectedAvatar = file;
+    //     const  formData=new FormData();
+    //     formData.append("image",this.selectedAvatar)
+    //     console.log("------------------+. - formdata ----------:",formData)
 
-       var path = (window.URL || window.webkitURL).createObjectURL(file);
-    console.log('path', path);
+    //     var path = (window.URL || window.webkitURL).createObjectURL(file);
+    //     console.log('path', path);
          
-      }
+    //   }
     },
     components:{
       NavBar,
       Avatar
     },
     mounted(){
-      
-    }
-    
-      //  watch:{
-      // email(value){
-      // console.log("email:",value)
-      // this.invalidField((value===""))
-      // },
-      // password (value){
-      // console.log("password:",value)
-      //  this.invalidField((value===""))
-      // }
-      // }
+  
+        var token = localStorage.getItem("token");
+
+        if( token)
+        {
+            this.dspFormSignIn=true;
+            this.dspFormSignUp=false;
+        }
+        else
+        {
+          this.dspFormSignIn=false;
+          this.dspFormSignUp=true;
+        }
 
 
     }
+}
 
 
 
@@ -267,10 +290,25 @@ export default {
               <form>
 
               <div v-if="dspFormSignUp" class="form-outline mb-4">
-              <label for="file-input" >
+
+                <label for="file-input-avatar" ><Avatar :url="this.urlAvatar" ></Avatar></label> 
+							
+											<div v-if="imageDataAvatar"
+											class="image-input"
+											:style="{ 'background-image': `url(${imageDataAvatar})` }"    
+											></div>
+											<input 
+												id="file-input-avatar"
+												class="file-input"
+												ref="fileInput"
+												type="file"
+												@input="onSelectFileAvatar"
+												accept="image/*"
+											>
+              <!-- <label for="file-input" >
                   <input id="file-input" type="file" @change="handleNewFile"/>
                   <Avatar :url="this.urlAvatar"></Avatar>
-              </label>
+              </label> -->
               <p class="form-label" >Your Avatar</p>
                   <!-- <label class="form-label" for="form3Example1cg">Your Avatar</label> -->
 
@@ -462,9 +500,19 @@ body {
       color:rgb(48, 235, 48)
     }
 
-      #file-input{
-       display: none;
-   }
+  #file-input-avatar
+{
+	display: none;
+}
+
+.image-input
+{
+  display: block;
+  width: 35px;
+  height: 35px;
+  background-size :cover;
+  background-position: center ;
+}
 
 
     /*********************************************************************/

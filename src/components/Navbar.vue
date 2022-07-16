@@ -16,16 +16,16 @@ export default {
   },
    mounted() {
 
-      console.log("-------------- log composant Navbar mounted -------------------")
+      // console.log("-------------- log composant Navbar mounted -------------------")
 
         var token = localStorage.getItem("token");
 
-         console.log("-------------- log check1 -------------------")
+         
 
 
         var current_user = JSON.parse( localStorage.getItem('current_user') );
 
-        console.log("-------------- log check2 -------------------")
+        
         //console.log("current_user.name", current_user.name);
         //const current_user = JSON.parse( localStorage.getItem('current_user') );
         //const current_user = localStorage.getItem("current_user")
@@ -42,15 +42,15 @@ export default {
        
         
         
-        this.isLoggedIn=( token != null );
+        this.isLoggedIn=( token != null && current_user != null);
        
-      console.log("this.isLoggedIn: ",this.isLoggedIn)
-        console.log("token: ",token)
-        console.log("this.current_user_name: ",this.current_user_name)
+      // console.log("this.isLoggedIn: ",this.isLoggedIn)
+      //   console.log("token: ",token)
+      //   console.log("this.current_user_name: ",this.current_user_name)
     },
     methods: {
       logOut() {
-        localStorage.removeItem("token");
+        // localStorage.removeItem("token");
         localStorage.removeItem("current_user");
         this.current_user_last_name="";
         this.current_user_name="";
@@ -68,7 +68,7 @@ export default {
 <header class="p-3  bg-secondary text-dark  ">
     
     <div class="container">
-      <div class="d-flex flex-column">
+      <div class="d-flex flex-column ">
         <div class="mx-auto mb-2"><Logo height="32" ></Logo></div> 
         <div class="mx-auto "><span>{{current_user_last_name}} {{current_user_name}} <i  v-if="current_user_admin == 'false'" class="fa-solid fa-user ps-2"></i> <i v-if=" current_user_admin == 'true'" class="fa-solid fa-user-gear ps-2"></i>
           <span><i id="i_logout" @click="logOut" v-if="this.isLoggedIn" class="fa-solid fa-arrow-right-from-bracket ps-2"></i></span></span>

@@ -4,17 +4,26 @@ export default{
     props:["url","width"],
       data(){
         return { 
-        //inhibit_ViewProfile:false
+            
+            imageDataAvatar:null
+        
         }
     },
+     methods: {
+
+     }
    
   
 }
 </script>
 
 <template >
-    <i v-if="!this.$props.url" class="fa-solid fa-circle-user "></i>
-    <img v-if="$props.url"  :src=$props.url  class="card-img-top rounded-circle shadow-4 " alt="Avatar"/>
+    
+    
+        <i v-if="!this.$props.url" class="fa-solid fa-circle-user "></i>
+        <img  v-if="$props.url"  :src=$props.url  class="card-img-top rounded-circle shadow-4 " alt="Avatar"/>
+     
+     <label v-if="$props.updateAvatar" class="form-label">New Avatar</label>
 </template>
 
 <style scoped>
@@ -27,5 +36,10 @@ img{
     border:1px;
     border-color: black;
     cursor:pointer;
+}
+
+.file-input
+{
+   display :none;
 }
 </style>

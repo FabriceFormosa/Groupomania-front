@@ -13,7 +13,6 @@ export default{
         "url_img_owner_post",            // url image propriétaire du post
         "comments_owner_post",           // commentaires associés au propriétaire du post
         "id_owner_post",                 // id proprietaire du post
-        "is_admin_owner_post",           // proprietaire du post admin ?
         "createdAt"                      // date de création du post
         ], 
     data() {
@@ -24,15 +23,25 @@ export default{
         current_user_admin:false,
         modeEditPost:false,
         contentPost:null,
-        contentPostModified:null
-       
+        contentPostModified:null,
+        imagePreview: null,
+        selectedImage:null,
+        post_id:null,
+       post_img_hidden:false,
+       imageUrlUpdated:null
       }
+    },
+    beforeCreate()
+    {
+        //  console.log("this.$props.id_owner_post",this.$props.id_owner_post)
+        this.post_id = this.$props.id_owner_post;
+       // console.log("this.post_id",this.post_id)
     },
     mounted(){
    
           this.current_user = JSON.parse( localStorage.getItem('current_user') );
           // console.log("email_owner_post",this.$props.email_owner_post)
-          // console.log("this.current_user",this.current_user.email)
+          //console.log("this.current_user",this.current_user)
 
 		    if( this.current_user!= null)
         {
@@ -44,9 +53,9 @@ export default{
         // Init
         this.contentPost = this.$props.content_owner_post
         this.contentPostModified = this.$props.content_owner_post
+        this.imageUrlUpdated = this.$props.url_img_owner_post;
        
-
-       
+      
 
     },
     
@@ -144,16 +153,45 @@ export default{
       {
         this.modeEditPost = !this.modeEditPost
         console.log( "click editPost",this.modeEditPost)
+       console.log( "this.$props.url_img_owner_post",this.$props.url_img_owner_post)
+      
+        if( !this.modeEditPost && this.$props.url_img_owner_post != null)
+        {
+          this.post_img_hidden = false;
+        }
+
+       console.log( "this.post_img_hidden",this.post_img_hidden)
 
       },
       updatePost()
       {
-          const {VITE_SERVER_ADDRESS,VITE_SERVER_PORT}= import.meta.env 
+
+
+        //     const { VITE_SERVER_ADDRESS, VITE_SERVER_PORT } = import.meta.env;
+        //     const url = `http://${VITE_SERVER_ADDRESS}:${VITE_SERVER_PORT}/posts`;
+        //     console.log("url ", url);
+        //     const formData = new FormData();
+        //     formData.append("contentPostModified", this.contentPostModified);
+        // //    formData.append("image", this.selectedImage);
+        //     const options = {
+        //         method: "PATCH",
+        //         headers: {
+        //             authorization: `Bearer ${localStorage.getItem("token")}`,
+        //             "Accept": "application/json"
+        //             //"Content-Type": "multipart/form-data "
+        //         },
+        //        // method: "POST",
+        //         body: formData
+        //     };
+
+
+        const {VITE_SERVER_ADDRESS,VITE_SERVER_PORT}= import.meta.env 
         const url=`http://${VITE_SERVER_ADDRESS}:${VITE_SERVER_PORT}/posts`
-
-        
         console.log("url :",url+"/"+this.$props.id_owner_post)
-
+        if(this.hidePostImage )
+        {
+          this.imageUrlUpdated = null;
+        }
         const  options = {
           method:'PATCH',
           headers:{
@@ -162,9 +200,10 @@ export default{
                 "Content-Type":"application/json"
                 },
           body:JSON.stringify({
-               contentUpdated:this.contentPostModified
+               contentUpdated:this.contentPostModified,
+               imageUrlUpdated:this.imageUrlUpdated
             })
-        }
+        } 
 
         fetch(url+"/"+this.$props.id_owner_post,options)
         .then((res) => {
@@ -198,37 +237,75 @@ export default{
         this.$router.push({path:'/updateprofile',query:{user_email: this.$props.email_owner_post}});
         
       }
-      
-     
+      ,
+      onSelectImgFile() {
+            console.log("appel fct onSelectImgFile this.$refs.fileInput:",this.$refs.fileInput)
+            
+            const input = this.$refs.fileInput;
+            console.log("appel fct onSelectImgFile input:",input)
+            const files = input.files;
+            console.log("appel fct onSelectImgFile files:",files)
+            if (files && files[0]) {
+                this.selectedImage = files[0];
+                console.log("appel fct onSelectImgFile selectedImage",this.selectedImage)
 
+                const reader = new FileReader;
+                reader.onload = e => {
+                    this.imagePreview = e.target.result;
+                    console.log(" appel fct onSelectImgFile this.imagePreview",this.imagePreview)
+                };
+                reader.readAsDataURL(files[0]);
+                this.$emit("input", files[0]);
+            }
+        },
 
+      hidePostImage()
+      {
+            this.post_img_hidden = true;
+      },
+      addPostImage()
+      {
+
+      }
     }
      
 }
 </script>
 <template>
-<div class="card mb-3 m-auto">
+<div class="container my-5 py-5">
+ <div class="row d-flex justify-content-center">
+<div class="col-md-10 col-lg-10 col-xl-8">
+<div class="card mb-3 m-auto ">
 
-    <div class="card-header d-flex justify-content-between">
-
-  <!-- <img src="https://mdbcdn.b-cdn.net/img/new/avatars/1.webp" class="rounded-circle" alt="Avatar" /> -->
-
-
- <div @click="viewProfile" > 
-    <Avatar 
-        :url="$props.avatar_owner_post"
-    ></Avatar>
-    <span><i v-if="current_user_email === this.$props.email_owner_post || current_user_admin =='true'" class="fa-solid fa-pen-to-square ps-2"  @click="UpdateProfile"></i></span><span><i v-if="current_user_admin =='true'" class="fa-solid fa-user-slash ps-2" @click="DeleteProfile"></i></span>
+<div class="card-header d-flex ">
+  <div class="d-flex flex-fill justify-content-start align-items-center">
+    <div @click="viewProfile" > 
+        <Avatar 
+            :url="$props.avatar_owner_post"
+        ></Avatar>
+    </div>
+    <div>
+      <span><i v-if="current_user_email === this.$props.email_owner_post || current_user_admin =='true'" class="fa-solid fa-pen-to-square ps-2" data-bs-toggle="tooltip" title="Mise à jour du profile" @click="UpdateProfile"></i>
+      </span><span><i v-if="current_user_admin =='true'" class="fa-solid fa-user-slash ps-2" data-bs-toggle="tooltip" title="Suppression du profile !" @click="DeleteProfile"></i></span>
+    </div>
   </div>
-  <div>
-  <span class="fw-bold">{{$props.last_name_owner_post}} {{$props.name_owner_post}}</span>
+
+  <div class="d-flex flex-fill justify-content-center">
+    <span class="fw-bold">{{$props.last_name_owner_post}} {{$props.name_owner_post}}</span>
   </div>
-  <div>
-  <span><i class="fa-solid fa-trash pe-2" v-if="current_user_email === this.$props.email_owner_post || current_user_admin =='true'" @click="deletePost"></i></span><span><i v-if="current_user_email === this.$props.email_owner_post || current_user_admin =='true'" class="fa-solid fa-pen-to-square"  @click="editPost"></i> <i v-if="modeEditPost" class="fa-solid fa-floppy-disk" @click="updatePost"></i></span>
+  <div class="d-flex flex-fill justify-content-end">
+    <span><i class="fa-solid fa-trash pe-2" data-bs-toggle="tooltip" title="Suppression du post!" v-if="current_user_email === this.$props.email_owner_post || current_user_admin =='true'" @click="deletePost"></i>
+    </span>
+    <span><i v-if="current_user_email === this.$props.email_owner_post || current_user_admin =='true'" class="fa-solid fa-pen-to-square pe-2" data-bs-toggle="tooltip" title="Mode édition" @click="editPost"></i>
+    <i v-if="modeEditPost && url_img_owner_post && !this.post_img_hidden" class="fa-solid fa-file-circle-minus pe-2" data-bs-toggle="tooltip" title="Suppression image" @click="hidePostImage"></i>
+    <i v-if="modeEditPost && !url_img_owner_post " class="fa-solid fa-file-circle-plus pe-2" @click="addPostImage"></i>
+    <i v-if="modeEditPost" class="fa-solid fa-floppy-disk" data-bs-toggle="tooltip" title="Sauvegarde des modifications" @click="updatePost"></i></span>
   </div>
 </div>
+
 <p class="pt-2 fs-6 text-muted ">{{createdAt}}</p>
-<img  id="image_post" v-if="url_img_owner_post"  :src="url_img_owner_post" class="card-img-top py-2" alt="image du post" />
+
+<img  id="image_post" v-if="url_img_owner_post && !this.post_img_hidden"  :src="url_img_owner_post" class="card-img-top py-2" alt="image du post" />
 
   
   <div class="card-body">
@@ -261,22 +338,24 @@ export default{
       ></Avatar>
       
       <input type="text" class="form-control" placeholder="Un petit commentaire..." aria-label="Username" v-model="currentComment"/>
-      <span><i  class="fa-solid fa-paper-plane"   @click="addComent"></i></span>
+      <span><i  class="fa-solid fa-paper-plane"  data-bs-toggle="tooltip" title="Envoi du commentaire" @click="addComent"></i></span>
       
     </div>
 
 
   </div>
 </div>
-
+</div>
+</div>
+</div>
 </template>
 
 <style scoped>
-@media(min-width:768px){
+/* @media(min-width:768px){
     .card{
       width:70%;
     }
-}
+} */
 .card-header
 {
  
@@ -308,5 +387,14 @@ i{
     background-color:aquamarine;
     border-radius:3px;
     width:100%;
+}
+
+.image-input
+{
+  display: block;
+  width: 150px;
+  height: 150px;
+  background-size :cover;
+  background-position: center ;
 }
 </style>

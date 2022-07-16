@@ -13,6 +13,12 @@ import Avatar from './Avatar.vue'
     },
     name: "Postform",
     methods: {
+      
+       viewProfile(){
+        console.log("appel methode view profile : this.$props.email_owner_post" ,this.$props.email_owner_post)
+        this.$router.push({path:'/viewprofile',query:{user_email: this.$props.email_owner_post}});
+
+       },
         onSelectFile() {
             const input = this.$refs.fileInput;
             const files = input.files;
@@ -26,34 +32,6 @@ import Avatar from './Avatar.vue'
                 this.$emit("input", files[0]);
             }
         },
-        //   handleNewFile(e)
-        //   {
-        //     const file = e.target.files[0]
-        //     console.log("file :",file)
-        //     this.selectedImage = file
-        //     //  permet la prévisualisation avant upload vers la database
-        //     const imgPreview = document.getElementById("img-preview");
-        //     console.log("imgPreview",imgPreview)
-        //     if(file)
-        //     {
-        //       const fileReader = new FileReader();
-        //       fileReader.readAsDataURL(file);
-        //       fileReader.addEventListener("load", function () {
-        //       // imgPreview.style.display = "block";
-        //       imgPreview.innerHTML = '<img src="' + this.result + '" />';
-        //       console.log("imgPreview.innerHTML",imgPreview.innerHTML)
-        //     });
-        //     if(file)
-        //     {
-        //           const reader = new FileReader
-        //       reader.onload = e => {
-        //         this.imageData = e.target.result
-        //       }
-        //       reader.readAsDataURL(file)
-        //     this.$emit('input', file)
-        //     }
-        // }
-        //   },
         clearPicture()
         {
             this.imageData = null;
@@ -117,12 +95,14 @@ import Avatar from './Avatar.vue'
 <section >
   <div class="container my-5 py-5">
     <div class="row d-flex justify-content-center">
-      <div class="col-md-12 col-lg-10 col-xl-8">
+      <div class="col-md-10 col-lg-10 col-xl-8">
         <div class="card">
             <div class="card-header d-flex flex-start align-items-center gap-2">
+            <div @click="viewProfile" >
                 <Avatar	
                       :url="this.urlAvatar"
                 ></Avatar>
+             </div>
                   <div>
                     <h6 class="fw-bold  mb-1 text-dark ">
                      {{userLastName}} {{userName}} 
@@ -159,13 +139,13 @@ import Avatar from './Avatar.vue'
             </div>
             <div class="d-flex justify-content-between align-items-center">
                 <div>
-                  <i v-if="content" @click="clearContent" class="fa-solid fa-comment-slash pe-2"></i>
-                  <i v-if="imageData" @click="clearPicture" class="fa-solid fa-file-circle-minus"></i>
+                  <label for="file-input-test" ><i class="fa-solid fa-file-circle-plus pe-2" data-bs-toggle="tooltip" title="Ajout image"></i></label> 
+                  <i v-if="content" @click="clearContent" class="fa-solid fa-comment-slash pe-2" data-bs-toggle="tooltip" title="Suppression du message"></i>
+                  <i v-if="imageData" @click="clearPicture" class="fa-solid fa-file-circle-minus" data-bs-toggle="tooltip" title="Suppression image"></i>
                 </div>
 
                 <div>
-                  <label for="file-input-test" ><i class="fa-solid fa-file-circle-plus pe-2"></i></label> 
-                  <i v-if="content || imageData" @click="handleCklick" class="fa-solid fa-paper-plane mt-1 ms-auto " ></i>
+                  <i v-if="content || imageData" @click="handleCklick" class="fa-solid fa-paper-plane mt-1 ms-auto " data-bs-toggle="tooltip" title="Envoi du post"></i>
                 </div>
             </div>
           </div>       

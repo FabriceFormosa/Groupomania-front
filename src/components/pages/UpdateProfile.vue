@@ -17,7 +17,9 @@ function data() // function data renvoie un objet
 	selectedAvatar:null,
 	urlAvatar:null,
 	show_pwd:false,
-	isReadOnly:false
+	isReadOnly:false,
+	selectedImageAvatar:null,
+	imageDataAvatar:null
 	
 	} 
 	
@@ -25,7 +27,10 @@ function data() // function data renvoie un objet
 
 
 function submitForm(id,email,password,name,lastName,service,admin){
-  console.log("submitForm",id,email,password,name,lastName,service,admin)
+
+	this.imageDataAvatar = null;
+
+ // console.log("submitForm",id,email,password,name,lastName,service,admin)
   //console.log(import.meta.env)
 const {VITE_SERVER_ADDRESS,VITE_SERVER_PORT}= import.meta.env 
 //console.log("VITE_SERVER_ADDRESS :",import.meta.env.VITE_SERVER_ADDRESS)
@@ -33,11 +38,12 @@ const {VITE_SERVER_ADDRESS,VITE_SERVER_PORT}= import.meta.env
 
 const url=`http://${VITE_SERVER_ADDRESS}:${VITE_SERVER_PORT}/users`
 //const  url="http://localhost:3000/auth/login"
-console.log("url ",url)
+//console.log("url ",url)
 
 //const profile = ({id,email,password,name,lastName,service,admin})
 const  formData=new FormData();
 formData.append("image",this.selectedAvatar)
+console.log( "--------------- update Profile this.selectedAvatar :",this.selectedAvatar)
 const user_datas ={id,email,password,name,lastName,service,admin}
 console.log( "update Profile :",user_datas)
 formData.append("user_datas",JSON.stringify(user_datas))
@@ -183,12 +189,13 @@ export default {
 methods:{
 
 		
-	  handleNewFile(e)
-      {
-        const file = e.target.files[0]
-        console.log("file :",file)
-        this.selectedAvatar = file
-      },
+	//   handleNewFile(e)
+    //   {
+	// 	console.log("appel updateprofile handleNewFile ")
+    //     const file = e.target.files[0]
+    //     console.log("------- updateprofile ------------------ file -------------------------:",file)
+    //     this.selectedAvatar = file
+    //   },
    	submitForm,
 	showPwd(){
 		console.log("fonction showPwd")
@@ -199,7 +206,24 @@ methods:{
 	console.log("fonction hidePwd")
 		this.show_pwd = false
 
-	}
+	},
+	         onSelectFileAvatar() {
+            const input = this.$refs.fileInput;
+			console.log("input:",input)
+            const files = input.files;
+			console.log("files[0]:",files[0])
+			
+            if (files && files[0]) {
+                this.selectedAvatar = files[0];
+                const reader = new FileReader;
+                reader.onload = e => {
+                    this.imageDataAvatar = e.target.result;
+                    console.log("e:",e)
+                };
+                reader.readAsDataURL(files[0]);
+               // this.$emit("input", files[0]);
+            }
+        }
 }
 
 }
@@ -220,18 +244,27 @@ methods:{
 									<h6 class="mb-0">Avatar</h6>
 								</div>
 								<div class="col-sm-9">
-									<label for="file-input" >
-									<input id="file-input" type="file" @change="handleNewFile"/>
-									<!-- <i v-if="!this.urlAvatar" class="fa-solid fa-circle-user "></i> -->
-									<!-- <Avatar v-if="this.urlAvatar" :url="this.urlAvatar" > -->
-									<Avatar	
-									:url="this.urlAvatar"
-									 ></Avatar>
-									
-									<!-- <img  id="image_post" v-if="urlAvatar"  :src="urlAvatar" class="card-img-top" alt="..." /> -->
-									</label>
-									
+									<!-- <label for="file-input-update" >
+									<input id="file-input-update" type="file" @change="handleNewFile"/>
+
+									<i v-if="!this.urlAvatar" class="fa-solid fa-circle-user "></i> -->
+
+									<label for="file-input-avatar" ><Avatar :url="this.urlAvatar" ></Avatar></label> 
+							
+											<div v-if="imageDataAvatar"
+											class="image-input"
+											:style="{ 'background-image': `url(${imageDataAvatar})` }"    
+											></div>
+											<input 
+												id="file-input-avatar"
+												class="file-input"
+												ref="fileInput"
+												type="file"
+												@input="onSelectFileAvatar"
+												accept="image/*"
+											>
 								</div>
+								
 							</div>
 
 							<div class="row mb-3">
@@ -422,15 +455,27 @@ img:hover
 {
     margin-top: 3rem;
 }
-   
-   #file-input{
+
+#file-input-avatar
+{
+	display: none;
+}
+/*    
+   #file-input-update{
        display: none;
-   }
+   } */
 
 i{
 	cursor:pointer
 }
 
-
+.image-input
+{
+  display: block;
+  width: 35px;
+  height: 35px;
+  background-size :cover;
+  background-position: center ;
+}
 
 </style>

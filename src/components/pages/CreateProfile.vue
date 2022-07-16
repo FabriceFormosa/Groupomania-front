@@ -14,8 +14,6 @@ function data() // function data renvoie un objet
 	error:"",
 	urlAvatar:null,
 	selectedAvatar:null
-
-	
 	} 
 }
 
