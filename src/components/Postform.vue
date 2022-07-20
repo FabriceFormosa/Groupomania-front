@@ -78,11 +78,11 @@ import Avatar from './Avatar.vue'
     components: { Avatar },
      created() {
 		  var current_user = JSON.parse( localStorage.getItem('current_user') );
-      console.log("current_user",current_user)
+      // console.log("current_user",current_user)
       this.urlAvatar =  current_user.avatar;
       this.userName  = current_user.name;
       this.userLastName = current_user.lastName;
-      console.log("this.urlAvatar",this.urlAvatar)
+      // console.log("this.urlAvatar",this.urlAvatar)
       
     },
   

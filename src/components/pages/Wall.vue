@@ -30,7 +30,7 @@ export default{
     },
     mounted(){
 
-        console.log("-------------- log page Wall.vue mounted -------------------")
+        //console.log("-------------- log page Wall.vue mounted -------------------")
         const options={
             headers:{
                 authorization:`Bearer ${localStorage.getItem("token")}`
@@ -61,7 +61,7 @@ export default{
               this.posts = posts 
               this.currentUser = email
 
-             console.log("this.posts :",this.posts)
+             // console.log("this.posts :",this.posts)
 
 
         this.posts.forEach(post => {

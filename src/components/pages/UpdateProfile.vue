@@ -55,7 +55,6 @@ const  options = {
                 "Accept":"application/json"
                 //"Content-Type": "multipart/form-data "
             },
-            
             body:formData
 }
 

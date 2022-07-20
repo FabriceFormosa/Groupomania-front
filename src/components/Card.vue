@@ -35,6 +35,7 @@ export default{
     {
         //  console.log("this.$props.id_owner_post",this.$props.id_owner_post)
         this.post_id = this.$props.id_owner_post;
+        this.selectedImage = null;
        // console.log("this.post_id",this.post_id)
     },
     mounted(){
@@ -60,9 +61,8 @@ export default{
     },
     
     methods:{
-
-
-       viewProfile(){
+      
+      viewProfile(){
         console.log("appel methode view profile : this.$props.email_owner_post" ,this.$props.email_owner_post)
         this.$router.push({path:'/viewprofile',query:{user_email: this.$props.email_owner_post}});
 
@@ -152,77 +152,113 @@ export default{
       editPost()
       {
         this.modeEditPost = !this.modeEditPost
-        console.log( "click editPost",this.modeEditPost)
-       console.log( "this.$props.url_img_owner_post",this.$props.url_img_owner_post)
+      //  console.log( "click editPost",this.modeEditPost)
+      // console.log( "this.$props.url_img_owner_post",this.$props.url_img_owner_post)
       
         if( !this.modeEditPost && this.$props.url_img_owner_post != null)
         {
           this.post_img_hidden = false;
         }
 
-       console.log( "this.post_img_hidden",this.post_img_hidden)
+        if( !this.modeEditPost)
+        {
+          this.imagePreview = null;
+        }
+
+      // console.log( "this.post_img_hidden",this.post_img_hidden)
 
       },
       updatePost()
       {
+           
+         
+            const { VITE_SERVER_ADDRESS, VITE_SERVER_PORT } = import.meta.env;
+            const url = `http://${VITE_SERVER_ADDRESS}:${VITE_SERVER_PORT}/posts`;
+            console.log("url ", url);
+          
+            //const val = {'test': 'val_test'}
+                  const formData = new FormData();
+                  console.log("this.selectedImage ", this.selectedImage);
+                  formData.append("image", this.selectedImage);
+                  //console.log("this.contentPostModified ", this.contentPostModified);
+                  formData.append('contentUpdated', this.contentPostModified);
+                  //console.log(formData.get('contentUpdated'))
+                  
+           // myformData.append("contentUpdated", this.contentPostModified);
+            //console.log("-- formData --",formData.)         //   formData.append("image", this.selectedImage);
+            const options = {
+                method:'PATCH',
+                headers: {
+                    authorization: `Bearer ${localStorage.getItem("token")}`,
+                    "Accept": "application/json"
+                    //"Content-Type": "multipart/form-data"
+                },
+                //method:'PATCH',
+                body:formData
+            };
 
-
-        //     const { VITE_SERVER_ADDRESS, VITE_SERVER_PORT } = import.meta.env;
-        //     const url = `http://${VITE_SERVER_ADDRESS}:${VITE_SERVER_PORT}/posts`;
-        //     console.log("url ", url);
+        
         //     const formData = new FormData();
-        //     formData.append("contentPostModified", this.contentPostModified);
+        //     formData.append("contentUpdated", this.contentPostModified);
+        //     console.log( "contentUpdated",this.contentPostModified)
         // //    formData.append("image", this.selectedImage);
         //     const options = {
-        //         method: "PATCH",
-        //         headers: {
+        //         method:'PATCH',
+        //         headers:{
         //             authorization: `Bearer ${localStorage.getItem("token")}`,
-        //             "Accept": "application/json"
-        //             //"Content-Type": "multipart/form-data "
+        //             "Accept": "application/json",
+        //             "Content-Type": "multipart/form-data"
         //         },
         //        // method: "POST",
         //         body: formData
         //     };
 
 
-        const {VITE_SERVER_ADDRESS,VITE_SERVER_PORT}= import.meta.env 
-        const url=`http://${VITE_SERVER_ADDRESS}:${VITE_SERVER_PORT}/posts`
-        console.log("url :",url+"/"+this.$props.id_owner_post)
-        if(this.hidePostImage )
-        {
-          this.imageUrlUpdated = null;
-        }
-        const  options = {
-          method:'PATCH',
-          headers:{
-                authorization:`Bearer ${localStorage.getItem("token")}`,
-                "Accept":"application/json",
-                "Content-Type":"application/json"
-                },
-          body:JSON.stringify({
-               contentUpdated:this.contentPostModified,
-               imageUrlUpdated:this.imageUrlUpdated
-            })
-        } 
+        // const {VITE_SERVER_ADDRESS,VITE_SERVER_PORT}= import.meta.env 
+        // const url=`http://${VITE_SERVER_ADDRESS}:${VITE_SERVER_PORT}/posts`
+        // console.log("url :",url+"/"+this.$props.id_owner_post)
+        // if(this.hidePostImage )
+        // {
+        //   this.imageUrlUpdated = null;
+        // }
+        // const  options = {
+        //   method:'PATCH',
+        //   headers:{
+        //         authorization:`Bearer ${localStorage.getItem("token")}`,
+        //         "Accept":"application/json",
+        //         "Content-Type":"application/json"
+        //         },
+        //   body:JSON.stringify({
+        //        contentUpdated:this.contentPostModified,
+        //        imageUrlUpdated:this.imageUrlUpdated
+        //     })
+        // } 
 
         fetch(url+"/"+this.$props.id_owner_post,options)
         .then((res) => {
-            if( res.status === 200 )
-            {
-              return res.json()
-            }else
-            {
+                if (res.ok) {
+                    console.log("res", res);
+                    return res.json();
+                }
+                throw new Error("failed to fetch post");
+            // if( res.status === 200 )
+            // {
+            //   return res.json()
+            // }else
+            // {
 
-            throw new Error("Failed to update Post")
-            }
+            // throw new Error("Failed to update Post")
+            // }
 
         })
-        .then((res) => {
+        .then((res) => { 
           console.log(res)
           this.$router.go() //reload page
       
         })
-       .catch((err) => {  console.log  })
+       .catch((err)=>{
+          console.log("err: ",err)
+        })
       }
       ,
       DeleteProfile()
@@ -238,35 +274,34 @@ export default{
         
       }
       ,
-      onSelectImgFile() {
-            console.log("appel fct onSelectImgFile this.$refs.fileInput:",this.$refs.fileInput)
+      addPostImage() {
+            console.log("appel fct addPostImage this.$refs.fileInput:",this.$refs.fileInput)
             
             const input = this.$refs.fileInput;
-            console.log("appel fct onSelectImgFile input:",input)
+            console.log("appel fct addPostImage input:",input)
             const files = input.files;
-            console.log("appel fct onSelectImgFile files:",files)
+            console.log("appel fct addPostImage files:",files)
             if (files && files[0]) {
                 this.selectedImage = files[0];
-                console.log("appel fct onSelectImgFile selectedImage",this.selectedImage)
+                console.log("appel fct addPostImage selectedImage",this.selectedImage)
 
                 const reader = new FileReader;
                 reader.onload = e => {
                     this.imagePreview = e.target.result;
-                    console.log(" appel fct onSelectImgFile this.imagePreview",this.imagePreview)
+                    console.log(" appel fct addPostImage this.imagePreview",this.imagePreview)
                 };
                 reader.readAsDataURL(files[0]);
-                this.$emit("input", files[0]);
+                //this.$emit("input", files[0]);
             }
         },
 
       hidePostImage()
       {
-            this.post_img_hidden = true;
+          this.selectedImage = null;
+          this.post_img_hidden = true;
+          
       },
-      addPostImage()
-      {
-
-      }
+     
     }
      
 }
@@ -298,7 +333,7 @@ export default{
     </span>
     <span><i v-if="current_user_email === this.$props.email_owner_post || current_user_admin =='true'" class="fa-solid fa-pen-to-square pe-2" data-bs-toggle="tooltip" title="Mode édition" @click="editPost"></i>
     <i v-if="modeEditPost && url_img_owner_post && !this.post_img_hidden" class="fa-solid fa-file-circle-minus pe-2" data-bs-toggle="tooltip" title="Suppression image" @click="hidePostImage"></i>
-    <i v-if="modeEditPost && !url_img_owner_post " class="fa-solid fa-file-circle-plus pe-2" @click="addPostImage"></i>
+    <label for="this.post_id"><i v-if="modeEditPost" class="fa-solid fa-file-circle-plus pe-2" data-bs-toggle="tooltip" title="Nouvelle image"></i></label>
     <i v-if="modeEditPost" class="fa-solid fa-floppy-disk" data-bs-toggle="tooltip" title="Sauvegarde des modifications" @click="updatePost"></i></span>
   </div>
 </div>
@@ -310,15 +345,34 @@ export default{
   
   <div class="card-body">
      
+      <div v-if="modeEditPost" class="d-flex flex-start align-items-center border">
+            
+            <!-- https://levelup.gitconnected.com/how-to-preview-images-before-uploading-them-in-vue-4964803adb64 -->
+            <div
+              class="image-input m-auto"
+              :style="{ 'background-image': `url(${imagePreview})` }"    
+            ></div>
+            <input
+              id="this.post_id"
+              class="file-input"
+              ref="fileInput"
+              type="file"
+              @input="addPostImage"
+              accept="image/*"
+            >
+      </div>
+      <label  v-if="modeEditPost" class="form-label">Image preview</label>
 
      <h5 class="card-title"></h5>
-     <p v-if="modeEditPost == false" class="card-text comment_text p-2">
+     <p v-if="!modeEditPost" class="card-text comment_text p-2">
         {{contentPost}}
      </p>
       
-     <div v-if="modeEditPost == true" class="form-floating mt-4">
+       <textarea v-if="modeEditPost" class="form-control mb-2" id="textAreaExample" rows="4" 
+                  style="background: #ffff;" v-model="contentPostModified"></textarea>
+     <!-- <tex v-if="modeEditPost" class="form-floating mt-4">
         <input  class="form-control py-3"  v-model="contentPostModified"/>
-    </div>
+    </tex> -->
      <!-- <p class="card-text"><small class="text-muted">Last updated3mins ago</small></p> -->
 
      <div v-for="comment in comments_owner_post" >
@@ -388,6 +442,11 @@ i{
     border-radius:3px;
     width:100%;
 }
+.file-input
+{
+   display :none;
+}
+ 
 
 .image-input
 {

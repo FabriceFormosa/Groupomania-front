@@ -10,7 +10,7 @@ import {createRouter,createWebHistory} from'vue-router'
 
 const routes=[
     {path:"/login",component:Login},
- //   {path:"/signup",component:Login},
+    //   {path:"/signup",component:Login},
     {path:"/home",component:Wall},
     {path:"/viewprofile",component:Profile},
     {path:"/createprofile",component:CreateProfile},
@@ -31,7 +31,7 @@ router.beforeEach( (to,from) => {
         console.log("re routage ver page login token inexistant ou invalide ")
         return router.push("/login")
     }
-
+    
     //console.log("routage normal")
 })
 
@@ -45,7 +45,7 @@ function isTokenPresent()
 {
     const token = localStorage.getItem("token")
     //console.log (" token present ",token)
-
+    
     return ( token != null)
 }
 
