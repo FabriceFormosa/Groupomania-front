@@ -1,24 +1,20 @@
-
-import { createApp } from 'vue'
-import BootstrapVue3 from'bootstrap-vue-3'
-import {router} from './routes/router'
-
+import { createApp } from "vue";
+import BootstrapVue3 from "bootstrap-vue-3";
+import { router } from "./routes/router";
 
 // Optional,since every component import their Bootstrap funcionality
 // the following line is not necessary
 // import bootstrap"
-import'bootstrap/dist/css/bootstrap.css'
-import'bootstrap-vue-3/dist/bootstrap-vue-3.css'
+import "bootstrap/dist/css/bootstrap.css";
+import "bootstrap-vue-3/dist/bootstrap-vue-3.css";
 
-import App from './App.vue'
-
+import App from "./App.vue";
 
 //console.log(process.env)
 
+const app = createApp(App);
 
-const app = createApp(App)
+app.use(BootstrapVue3);
+app.use(router);
 
-app.use(BootstrapVue3)
-app.use(router)
-
-app.mount('#app')
+app.mount("#app");

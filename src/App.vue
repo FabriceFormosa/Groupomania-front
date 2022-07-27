@@ -6,10 +6,10 @@
 //import NavBar from "./components/Navbar.vue";
 
 export default {
-  name:"App",
-  components:{
-  //  Login,
-  //  NavBar
+  name: "App",
+  components: {
+    //  Login,
+    //  NavBar
   }
 }
 
@@ -17,21 +17,20 @@ export default {
 
 <template>
 
-<!-- <h1>Welcome to Groupomania</h1> -->
+  <!-- <h1>Welcome to Groupomania</h1> -->
 
-<!-- <NavBar></NavBar> -->
-<router-view></router-view>
+  <!-- <NavBar></NavBar> -->
+  <router-view></router-view>
 
 </template>
 
 <style>
-body{
-  background-color:#4E5166;
+body {
+  background-color: #4E5166;
+  
 }
-</style>
 
-
-<style>
 
 
 </style>
+
