@@ -10,7 +10,6 @@ import "bootstrap-vue-3/dist/bootstrap-vue-3.css";
 
 import App from "./App.vue";
 
-//console.log(process.env)
 
 const app = createApp(App);
 

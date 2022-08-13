@@ -1,4 +1,3 @@
-//import 'dotenv/config'
 
 import { fileURLToPath, URL } from "url";
 
