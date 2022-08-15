@@ -20,6 +20,7 @@ export default {
       required: true,
     },
   },
+
   data() {
     return {
       currentComment: null,
@@ -38,11 +39,21 @@ export default {
 
     this.fullName = this.postLastName + "  " + this.postName;
   },
+  methods: {
+    viewProfile() {
+      this.$router.push({
+        path: "/viewprofile",
+        query: { user_email: this.$props.email },
+      });
+    },
+  },
 };
 </script>
 <template>
   <div class="d-flex gap-1">
-    <Avatar :url="this.$props.urlAvatar"></Avatar>
+    <div @click="viewProfile">
+      <Avatar :url="this.$props.urlAvatar"></Avatar>
+    </div>
     <div class="d-flex flex-column comment_text p-1">
       <p>{{ fullName }}</p>
       <p>{{ content }}</p>
