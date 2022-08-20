@@ -44,6 +44,10 @@ export default {
       const url = `http://${VITE_SERVER_ADDRESS}:${VITE_SERVER_PORT}/posts`;
      
       const formData = new FormData();
+      if( this.content == null)
+      {
+        this.content ="Aucun  commentaire !";
+      }
       formData.append("content", this.content);
       formData.append("image", this.selectedImage);
       const options = {

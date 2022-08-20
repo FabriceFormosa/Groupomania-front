@@ -66,8 +66,8 @@ export default {
         method: "POST",
         headers: {
           authorization: `Bearer ${localStorage.getItem("token")}`,
-          Accept: "application/json",
-          "Content-Type": "application/json",
+          "Accept":"application/json",
+          "Content-Type":"application/json",
         },
         body: JSON.stringify({
           comment: this.currentComment,
@@ -88,20 +88,24 @@ export default {
         .catch((err) => {console.log("err :",err)});
     },
     deletePost() {
+
+      console.log("------------------------ appel fonction deletePost")
       const { VITE_SERVER_ADDRESS, VITE_SERVER_PORT } = import.meta.env;
       const url = `http://${VITE_SERVER_ADDRESS}:${VITE_SERVER_PORT}/posts`;
-l
+
       const options = {
         method: "DELETE",
         headers: {
           authorization: `Bearer ${localStorage.getItem("token")}`,
-          Accept: "application/json",
-          "Content-Type": "application/json",
+          "Accept":"application/json",
+          "Content-Type":"application/json"
         },
         body: JSON.stringify({
           admin: this.current_user_admin,
-        }),
+        })
       };
+
+      console.log(" fetch url :",url + "/" + this.$props.id_owner_post)
 
       fetch(url + "/" + this.$props.id_owner_post, options)
         .then((res) => {
@@ -133,15 +137,24 @@ l
 
       const formData = new FormData();
 
+      
       formData.append("image", this.selectedImage);
 
+      
+
       formData.append("contentUpdated", this.contentPostModified);
+
+      formData.append("deleteImg",this.post_img_hidden)
+     
+     
+      
+      
 
       const options = {
         method: "PATCH",
         headers: {
           authorization: `Bearer ${localStorage.getItem("token")}`,
-          Accept: "application/json",
+          "Accept":"application/json",
         },
 
         body: formData,

@@ -31,8 +31,8 @@ export default {
     logOut() {
       localStorage.removeItem("token");
       localStorage.removeItem("current_user");
-      this.current_user_last_name = "";
-      this.current_user_name = "";
+      this.current_user_last_name = null;
+      this.current_user_name = null;
       this.$router.push("/login");
     },
   },
