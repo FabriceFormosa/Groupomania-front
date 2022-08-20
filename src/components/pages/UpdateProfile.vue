@@ -16,7 +16,7 @@ function data() {
     selectedAvatar: null,
     urlAvatar: null,
     show_pwd: false,
-    isReadOnly: false,
+    isReadOnly: true,
     selectedImageAvatar: null,
     imageDataAvatar: null,
   };
@@ -294,7 +294,7 @@ export default {
           </div>
         </div>
 
-        <div v-if="this.admin == 'true'" class="row mb-3">
+        <div  class="row mb-3">
           <div class="col-sm-3">
             <h6 class="mb-0">admin</h6>
           </div>
