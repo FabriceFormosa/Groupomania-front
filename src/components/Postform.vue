@@ -34,6 +34,7 @@ export default {
       }
     },
     clearPicture() {
+      this.$refs.fileInput.value = '';
       this.imageData = null;
     },
     clearContent() {
