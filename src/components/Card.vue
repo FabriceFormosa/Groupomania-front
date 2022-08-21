@@ -129,6 +129,7 @@ export default {
 
       if (!this.modeEditPost) {
         this.imagePreview = null;
+        this.contentPostModified = this.$props.content_owner_post;
       }
     },
     updatePost() {
