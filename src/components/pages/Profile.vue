@@ -59,7 +59,7 @@ export default {
         this.name = current_user.name;
         this.lastName = current_user.lastName;
         this.admin =
-          current_user.admin == "false" ? "Compte Utilisateur" : "Compte Administrateur";
+          current_user.admin == "false" ? "Compte Utilisateur" : "Compte Modérateur";
         this.service = current_user.service;
         this.urlAvatar = current_user.avatar;
       }
