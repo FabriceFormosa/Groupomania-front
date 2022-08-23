@@ -84,7 +84,19 @@ export default {
 
     this.admin = current_user.admin;
 
-    if (this.admin == "true") this.isReadOnly = false;
+   
+    if (this.admin == "true") 
+    {
+      this.isReadOnly = false;
+      
+    }
+    else
+    {
+        if( this.$route.query.user_email != current_user.email)
+        {
+          this.$route.query.user_email = current_user.email;
+        }
+    }
 
     if (this.$route.query.user_email != null) {
       this.email = this.$route.query.user_email;
