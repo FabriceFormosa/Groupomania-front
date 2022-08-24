@@ -26,9 +26,27 @@ router.beforeEach((to, from) => {
    
     return router.push("/login");
   }
+
+  //console.log("router to ", to ," from :" ,from)
+
+  
   
   
 });
+
+// Rafraichissement updateProfil administrateur si edition d'un profil utilisateur en cours
+router.afterEach((to, from) => {
+
+  if( to.fullPath == "/updateprofile" && from.fullPath.includes("user_email"))
+  {
+
+    //console.log("----------------------rafraichir---------------")
+    router.go();
+  }
+
+});
+
+ 
 
 function isPrivatePage(to) {
   const publicPages = ["/login", "/signup"];
