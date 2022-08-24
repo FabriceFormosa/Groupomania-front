@@ -36,8 +36,8 @@ router.beforeEach((to, from) => {
 
 // Rafraichissement updateProfil administrateur si edition d'un profil utilisateur en cours
 router.afterEach((to, from) => {
-
-  if( to.fullPath == "/updateprofile" && from.fullPath.includes("user_email"))
+  var current_user = JSON.parse(localStorage.getItem("current_user"));
+  if( to.fullPath == "/updateprofile" && from.fullPath.includes("user_email") && current_user.admin ==="true")
   {
 
     //console.log("----------------------rafraichir---------------")
