@@ -20,6 +20,7 @@ function submitForm(email, password, name, lastName, service, admin) {
   const { VITE_SERVER_ADDRESS, VITE_SERVER_PORT } = import.meta.env;
 
   const url = `http://${VITE_SERVER_ADDRESS}:${VITE_SERVER_PORT}/users/create`;
+  url = `http://${VITE_SERVER_ADDRESS}/users/create`;
 
   const formData = new FormData();
   formData.append("image", this.selectedAvatar);

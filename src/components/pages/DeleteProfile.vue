@@ -27,7 +27,7 @@ export default {
       };
       const { VITE_SERVER_ADDRESS, VITE_SERVER_PORT } = import.meta.env;
       const url = `http://${VITE_SERVER_ADDRESS}:${VITE_SERVER_PORT}/users/getUser/${this.email}`;
-
+      url = `http://${VITE_SERVER_ADDRESS}/users/getUser/${this.email}`;
 
 
       fetch(url, options)
@@ -61,6 +61,7 @@ export default {
 
       const { VITE_SERVER_ADDRESS, VITE_SERVER_PORT } = import.meta.env;
       const url = `http://${VITE_SERVER_ADDRESS}:${VITE_SERVER_PORT}/users`;
+      const url = `http://${VITE_SERVER_ADDRESS}/users`;
 
      
 

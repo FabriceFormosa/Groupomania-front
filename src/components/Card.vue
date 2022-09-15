@@ -61,6 +61,7 @@ export default {
     addComent() {
       const { VITE_SERVER_ADDRESS, VITE_SERVER_PORT } = import.meta.env;
       const url = `http://${VITE_SERVER_ADDRESS}:${VITE_SERVER_PORT}/posts`;
+       url = `http://${VITE_SERVER_ADDRESS}/posts`;
 
       const options = {
         method: "POST",
@@ -92,6 +93,7 @@ export default {
       console.log("------------------------ appel fonction deletePost")
       const { VITE_SERVER_ADDRESS, VITE_SERVER_PORT } = import.meta.env;
       const url = `http://${VITE_SERVER_ADDRESS}:${VITE_SERVER_PORT}/posts`;
+       url = `http://${VITE_SERVER_ADDRESS}/posts`;
 
       const options = {
         method: "DELETE",
@@ -135,6 +137,7 @@ export default {
     updatePost() {
       const { VITE_SERVER_ADDRESS, VITE_SERVER_PORT } = import.meta.env;
       const url = `http://${VITE_SERVER_ADDRESS}:${VITE_SERVER_PORT}/posts`;
+      url = `http://${VITE_SERVER_ADDRESS}/posts`;
 
       const formData = new FormData();
 
