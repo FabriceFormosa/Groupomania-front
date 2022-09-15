@@ -26,8 +26,8 @@ function submitForm(id, email, password, name, lastName, service, admin) {
   this.imageDataAvatar = null;
   const { VITE_SERVER_ADDRESS, VITE_SERVER_PORT } = import.meta.env;
 
-  const url = `http://${VITE_SERVER_ADDRESS}:${VITE_SERVER_PORT}/users`;
-  url = `http://${VITE_SERVER_ADDRESS}/users`;
+  // const url = `http://${VITE_SERVER_ADDRESS}:${VITE_SERVER_PORT}/users`;
+  const url = `https://groupomaniak-back.herokuapp.com/users`;
 
   const formData = new FormData();
   formData.append("image", this.selectedAvatar);
@@ -108,8 +108,8 @@ export default {
         },
       };
       const { VITE_SERVER_ADDRESS, VITE_SERVER_PORT } = import.meta.env;
-      const url = `http://${VITE_SERVER_ADDRESS}:${VITE_SERVER_PORT}/users/getUser/${this.email}`;
-      url = `http://${VITE_SERVER_ADDRESS}/users/getUser/${this.email}`;
+      // const url = `http://${VITE_SERVER_ADDRESS}:${VITE_SERVER_PORT}/users/getUser/${this.email}`;
+      const url = `https://groupomaniak-back.herokuapp.com/users/getUser/${this.email}`;
 
       fetch(url, options)
         .then((res) => {

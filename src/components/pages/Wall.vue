@@ -32,8 +32,8 @@ export default {
       },
     };
     const { VITE_SERVER_ADDRESS, VITE_SERVER_PORT } = import.meta.env;
-    const url = `http://${VITE_SERVER_ADDRESS}:${VITE_SERVER_PORT}/posts`;
-     url = `http://${VITE_SERVER_ADDRESS}/posts`;
+   // const url = `http://${VITE_SERVER_ADDRESS}:${VITE_SERVER_PORT}/posts`;
+  const url = `https://groupomaniak-back.herokuapp.com/posts`;
 
     fetch(url, options)
       .then((res) => {

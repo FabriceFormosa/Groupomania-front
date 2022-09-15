@@ -26,8 +26,8 @@ function data() {
 function signUp(email, password, confirmPassword, name, lastName, service) {
 
   const { VITE_SERVER_ADDRESS, VITE_SERVER_PORT } = import.meta.env;
-  const url = `http://${VITE_SERVER_ADDRESS}:${VITE_SERVER_PORT}/users/signUp`;
-  url = `http://${VITE_SERVER_ADDRESS}/users/signUp`;
+  // const url = `http://${VITE_SERVER_ADDRESS}:${VITE_SERVER_PORT}/users/signUp`;
+  const url = `https://groupomaniak-back.herokuapp.com/users/signUp`;
 
   const admin = "false";
   this.imageDataAvatar = null;
@@ -79,8 +79,8 @@ function signUp(email, password, confirmPassword, name, lastName, service) {
 function signIn(email, password) {
   const { VITE_SERVER_ADDRESS, VITE_SERVER_PORT } = import.meta.env;
 
-  const url = `http://${VITE_SERVER_ADDRESS}:${VITE_SERVER_PORT}/users/login`;
-  url = `http://${VITE_SERVER_ADDRESS}/users/login`;
+  // const url = `http://${VITE_SERVER_ADDRESS}:${VITE_SERVER_PORT}/users/login`;
+  const url = `https://groupomaniak-back.herokuapp.com/users/login`;
   const options = {
     method: "POST",
     headers: { "Content-Type": "application/json" },
